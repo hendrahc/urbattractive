@@ -3,8 +3,9 @@ import random
 import requests
 import os
 
-n_image = 99
-start_counter = 2
+n_image = 1000
+start_counter = 10000
+start_c = 220051
 
 width = 600
 height = 400
@@ -16,10 +17,16 @@ eps = 0.00005
 image_loc = "../../Dataset/Images/"
 log_loc = "../../Dataset/"
 # coordinates
+
 min_lat = 52.29
 max_lat = 52.42
 min_long = 4.73
 max_long = 4.98
+
+#min_lat = 52.36
+#max_lat = 52.39
+#min_long = 4.87
+#max_long = 4.93
 
 
 def generate_random_point():
@@ -99,6 +106,25 @@ def start_crawling():
             if(log != 0):
                 valid = 1
                 logfile.write(log)
+        if(iter%100 == 0):
+            print("index "+str(iter)+" has been created")
     logfile.close()
 
-start_crawling()
+def start_defined_crawling():
+    logfile = open(log_loc + "dataset.txt", "a")
+    input_filename = log_loc+"attractive_locs.txt"
+    input_file = open(input_filename, "r")
+    iter = start_c
+    for line in input_file:
+        fields = line.split(",")
+        if(len(fields) == 2):
+            log = process_location(format(float(fields[0]),".10f"), format(float(fields[1]),".10f"), iter)
+            if (log != 0):
+                valid = 1
+                logfile.write(log)
+        iter = iter + 1
+    logfile.close()
+    input_file.close()
+
+# start_crawling()
+start_defined_crawling()

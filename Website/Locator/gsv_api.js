@@ -29,6 +29,12 @@ function initMap() {
 			icon: symbol,
 			title: name
 		});
+		
+		markers[name].addListener('click', function() {
+          map.setZoom(20);
+          map.setCenter(markers[name].getPosition());
+        });
+		
 	}
 
 }
