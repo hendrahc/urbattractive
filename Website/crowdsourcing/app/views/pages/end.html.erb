@@ -1,0 +1,11 @@
+<h1>Image Rating Test</h1>
+
+<p>You have reached the end of the test. Thank you for taking part in the test!</p>
+
+<p>
+<% if session[:vcode].nil? %>
+	
+<% else %>
+	<%= "Your code : " + session[:vcode] %>
+<% end %>
+</p>

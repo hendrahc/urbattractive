@@ -1,0 +1,35 @@
+<h1>Example : Image Aesthetic Appeal</h1> 
+<!--<%= session[:test_set] %>
+<%= session[:subtask] %>
+<%= session[:first] %>-->
+
+<p>
+We also ask you to rate how beautiful you think an image is (the image's aesthetic appeal). You may think that an image is still beautiful even if the quality is not excellent.
+</p>
+<br>
+
+<div id="test_image">
+	<%= link_to image_tag('train-1.jpg'), '#' %>
+</div>
+
+<p>
+Please indicate the image's level of <b>beauty</b> below:
+</p>
+
+<div id="slider-ACR-Rec"></div>
+<table style="width:100%">
+	<tr>
+		<td style="text-align:left" width="12.5%">Bad</td>
+		<td style="text-align:center" >Poor</td>
+		<td style="text-align:center" width="25%">Fair</td>
+		<td style="text-align:center" width="25%">Good</td>
+		<td style="text-align:right" width="12.5%">Excellent</td>
+	</tr>
+</table>
+<br>
+<br>
+
+<div class="buttons">
+  <%= link_to "Next", ready_path, class: "btn btn-large btn-primary" %> 
+</div>
+

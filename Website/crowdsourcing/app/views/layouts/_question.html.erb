@@ -1,0 +1,21 @@
+
+ 		<% if session[:images][(session[:img_num].to_i)].to_i == 4 %>
+			<tr><td><%= radio_button_tag(:answer, "car") %></td>
+			<td><%= label_tag(:answer_car, "a broken car in the sand") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "eating") %></td>
+			<td><%= label_tag(:answer_eating, "man eating fries") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "dolls") %></td>
+			<td><%= label_tag(:answer_dolls, "a row of dolls/plush toys") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "eye") %></td>
+			<td><%= label_tag(:answer_eye, "an eye") %></td></tr>
+		<% elsif session[:images][(session[:img_num].to_i)].to_i == 27 %>
+			<tr><td><%= radio_button_tag(:answer, "teacher") %></td>
+			<td><%= label_tag(:answer_teacher, "a teacher in class") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "cat") %></td>
+			<td><%= label_tag(:answer_cat, "a cat with a red hat") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "cook") %></td>
+			<td><%= label_tag(:answer_cook, "chef cooking") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "girlboat") %></td>
+			<td><%= label_tag(:answer_girlboat, "a girl on a boat") %></td></tr>					
+		<% end %>
+	

@@ -1,0 +1,20 @@
+<h1>Instructions</h1> 
+
+<% if session[:scale] == 1 %>
+	<%= render 'layouts/introACR' %>
+<% elsif session[:scale] == 2 %>	
+	<%= render 'layouts/introVA' %>
+<% elsif session[:scale] == 3 %>
+	<%= render 'layouts/introCONT' %>
+<% elsif session[:scale] == 4 %>
+	<%= render 'layouts/introBIN' %>
+<% elsif session[:scale] == 5 %>
+	<%= render 'layouts/intro7pt' %>
+<% end %>
+
+
+
+<div id="wait-text"></div>
+<div class="buttons">
+  <%= link_to "Start now!", totraining_path, class: "btn btn-large btn-primary", :id => "start-button"%> 
+</div>

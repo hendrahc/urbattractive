@@ -1,0 +1,9 @@
+<% provide(:title, 'End of Subtask') %>
+
+<h1>End of Task <%= session[:subtask].to_i - 1 %></h1>
+
+<p>You have completed one task of the test. Click below to continue to the next task.</p>
+
+<div class="buttons">
+  <%= link_to "Continue", 'instructions', class: "btn btn-large btn-primary" %> 
+</div>

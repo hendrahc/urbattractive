@@ -1,0 +1,42 @@
+
+<br>
+<p>Please answer the following question correctly!</p>
+<div class="row">
+	<div class="span8 offset2">
+		<div class="contentquestion">
+		<%= form_tag update_path, :method => :post do %>
+		<% if (session[:img_num]).to_i == 5 %>
+			<p>What was the main object of the last picture?</p>
+			<table align="center" class="question">
+			<tr><td><%= radio_button_tag(:answer, "car") %></td>
+			<td><%= label_tag(:answer_car, " a car in a desert") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "eating") %></td>
+			<td><%= label_tag(:answer_eating, " man eating fries") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "zebras") %></td>
+			<td><%= label_tag(:answer_zebras, " two zebras in a field") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "eye") %></td>
+			<td><%= label_tag(:answer_eye, " an eye") %></td></tr>
+			</table>
+		<% elsif (session[:img_num]).to_i == 19 %>
+			<p>What was the main object of the last picture?</p>		
+			<table align="center" class="question">
+			<tr><td><%= radio_button_tag(:answer, "dog") %></td>
+			<td><%= label_tag(:answer_dog, " a dog lying down") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "car") %></td>
+			<td><%= label_tag(:answer_car, " a parked car") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "cake") %></td>
+			<td><%= label_tag(:answer_cake, " a cake on display") %></td></tr>
+			<tr><td><%= radio_button_tag(:answer, "beach") %></td>
+			<td><%= label_tag(:answer_beach, " a beach") %></td></tr>
+			</table>
+		<% end %>
+
+        
+		<div class="buttons">
+			<%= submit_tag "Next", class: "btn btn-large btn-primary" %> 
+		</div>
+		<% end %>
+	
+		</div>
+	</div>
+</div>

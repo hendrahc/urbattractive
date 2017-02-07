@@ -1,0 +1,3 @@
+<%= provide(:id, request.session_options[:id]) %>
+
+<p>You're already signed in as a user. <a href="/show">Click here to continue the test.</a> Or <%= link_to 'click here to sign out and redo the test.', session_path(:id => request.session_options[:id]), :method => :delete %></p>

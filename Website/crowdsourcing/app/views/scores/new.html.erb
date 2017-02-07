@@ -1,0 +1,26 @@
+<div id="test_image">
+<%= link_to image_tag(@img.filepath), '#' %>
+</div>
+
+<%= form_for(@score) do |f| %>
+  <%= f.hidden_field :score, :id => "amount" %>
+  <%= f.hidden_field :recognizability, :id => "amount-Rec" %>
+  <%= f.hidden_field :img_id, :value => session[:images][(session[:img_num].to_i)].to_i %>
+  <%= f.hidden_field :user_id, :value => session[:userid].to_s %>
+
+	<%= f.hidden_field :scale, :value => session[:scale].to_s %>
+<% if session[:scale] == 1 %>
+	  <%= render 'layouts/scaleACR' %>
+	<% elsif session[:scale] == 2 %>  
+	  <%= render 'layouts/scaleVA' %>
+	<% elsif session[:scale] == 3 %>
+	  <%= render 'layouts/scaleCONT' %>
+	<% elsif session[:scale] == 4 %>
+	  <%= render 'layouts/scaleBIN' %>
+	<% elsif session[:scale] == 5 %>
+	  <%= render 'layouts/scale7pt' %> 
+<% end %>
+
+<div class="buttons"><%= f.submit "Next", class: "btn btn-large btn-primary" %></div>
+
+<% end %>

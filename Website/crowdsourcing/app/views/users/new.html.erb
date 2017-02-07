@@ -1,0 +1,41 @@
+<div class="center hero-unit"> 
+  <h1>Welcome to the Urban Attractiveness Evaluation</h1>
+</div>
+
+<h3>This test is for non-profit research purposes.</h3>
+<h3>Tell us which views are attractive!</h3>
+
+<br>
+
+<div class="row">
+  <div class="box">
+  <div class="span8 offset2">
+
+    <p>Please fill in the details below, and press 'Save and continue' to start the test.</p>
+
+      <%= form_for(@user) do |f| %>
+        <%= f.hidden_field :id, :value => session[:userid] %>
+        <%= f.hidden_field :campaign_id, :value => session[:campaign] %>
+        <%= f.hidden_field :start_time, :value => Time.now.strftime("%I:%M:%S %z") %>
+
+        <%= f.label :name %>
+        <%= f.text_field :name, :size => '60' %>
+
+        <%= f.label :email %>
+        <%= f.text_field :email %>
+
+        <%= f.label :gender %>
+        <%= f.select :gender, options_for_select(['M', 'F', 'N/A'])%>
+
+        <%= f.label :age %>
+        <%= f.select :age, (17..50) %>
+        <br>
+        <br>
+        <div class='center'>
+        <%= f.submit "Save and continue", class: "btn btn-large btn-primary" %>
+        </div>
+      <% end %>
+   </div>
+
+</div>
+</div>

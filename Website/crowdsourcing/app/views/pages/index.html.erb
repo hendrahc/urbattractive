@@ -1,0 +1,24 @@
+<div class="center hero-unit"> 
+  <h1>Urban Attractivness Evaluation</h1>
+</div>
+
+<h3>Help us rate the attractiveness of the location shown in each image!</h3>
+<h3>This test is for non-profit research purposes.</h3>
+
+
+<p align="center">Please fill in your gender and age below, for demographic survey in our research only.</p>
+
+<%= form_for User.new, url: crowdsourceuser_path do |f| %>
+<%= f.hidden_field(:id, :value => session[:userid].to_s) %>
+<table align="center" class="question">
+	<tr><td><%= label_tag ("Gender :") %>
+	<%= f.select(:gender,options_for_select(["M", "F"])) %></td></tr>
+
+	<tr><td><%= label_tag ("Age :") %>
+	<%= f.select(:age,options_for_select((17..50).step(1)))%></td></tr>
+
+</table>
+	<div class="buttons">
+  	<%= f.submit "Click to continue", class: "btn btn-large btn-primary" %> 
+	</div>
+<% end %>

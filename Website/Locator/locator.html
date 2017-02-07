@@ -7,7 +7,10 @@
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-      #map {
+      #main {
+        height: 100%;
+      }
+	  #map {
         height: 100%;
       }
       /* Optional: Makes the sample page fill the window. */
@@ -17,9 +20,20 @@
         padding: 0;
       }
     </style>
+	<script src="bootstrap.min.js"></script>
+	<link rel=stylesheet href="bootstrap.min.css">
   </head>
   <body>
-    <div id="map"></div>
+	<div id="main" class="row">
+		<div id="map" class="col-sm-8"></div>
+		<div id="imgshow" class="col-sm-2">
+			<img class="img-responsive" id="img1" alt="img1" height = "10">
+			<img class="img-responsive" id="img2" alt="img2">
+			<img class="img-responsive" id="img3" alt="img3">
+			<img class="img-responsive" id="img4" alt="img4">
+		</div>
+	</div>
+	
 	<script src="coordinates.js"></script>
 	<script src="gsv_api.js"></script>
 	

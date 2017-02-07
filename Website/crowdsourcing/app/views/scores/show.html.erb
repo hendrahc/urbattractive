@@ -1,0 +1,27 @@
+<p>
+    #Images = <%=h @score.lgt%>
+</p>
+
+<p>
+  <b>User:</b>
+  <%=h @score.user_id %>
+</p>
+
+<p>
+  <b>Img:</b>
+  <%=h @score.img_id %>
+</p>
+
+<p>
+  <b>Scale:</b>
+  <%=h @score.scale %>
+</p>
+
+<p>
+  <b>Score:</b>
+  <%=h @score.score %>
+</p>
+
+
+<%= link_to 'Edit', edit_score_path(@score) %> |
+<%= link_to 'Back', scores_path %>
