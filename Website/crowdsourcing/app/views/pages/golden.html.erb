@@ -1,0 +1,27 @@
+<!--<%= session[:test_set] %>
+<%= session[:subtask] %>
+<%= session[:first] %>-->
+
+<br>
+<br>
+<br>
+<br>
+
+<div id="test_image">
+	<%= link_to image_tag('Training/golden_1.jpg'), '#' %>
+</div>
+
+<p>
+Which objects are appeared in this image?
+</p>
+<br>
+<input type="checkbox" name="golden" value="Bike">Bicycle <br>
+<input type="checkbox" name="car" value="Car">Car <br>
+<input type="checkbox" name="car" value="Car">Building <br>
+<br>
+<br>
+
+<div class="buttons">
+  <%= link_to "Next", submit_golden_path, class: "btn btn-large btn-primary" %>
+</div>
+

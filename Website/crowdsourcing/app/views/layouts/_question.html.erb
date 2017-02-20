@@ -1,21 +1,62 @@
+<p>
+Would you <b>like to visit</b> this place?
+</p>
 
- 		<% if session[:images][(session[:img_num].to_i)].to_i == 4 %>
-			<tr><td><%= radio_button_tag(:answer, "car") %></td>
-			<td><%= label_tag(:answer_car, "a broken car in the sand") %></td></tr>
-			<tr><td><%= radio_button_tag(:answer, "eating") %></td>
-			<td><%= label_tag(:answer_eating, "man eating fries") %></td></tr>
-			<tr><td><%= radio_button_tag(:answer, "dolls") %></td>
-			<td><%= label_tag(:answer_dolls, "a row of dolls/plush toys") %></td></tr>
-			<tr><td><%= radio_button_tag(:answer, "eye") %></td>
-			<td><%= label_tag(:answer_eye, "an eye") %></td></tr>
-		<% elsif session[:images][(session[:img_num].to_i)].to_i == 27 %>
-			<tr><td><%= radio_button_tag(:answer, "teacher") %></td>
-			<td><%= label_tag(:answer_teacher, "a teacher in class") %></td></tr>
-			<tr><td><%= radio_button_tag(:answer, "cat") %></td>
-			<td><%= label_tag(:answer_cat, "a cat with a red hat") %></td></tr>
-			<tr><td><%= radio_button_tag(:answer, "cook") %></td>
-			<td><%= label_tag(:answer_cook, "chef cooking") %></td></tr>
-			<tr><td><%= radio_button_tag(:answer, "girlboat") %></td>
-			<td><%= label_tag(:answer_girlboat, "a girl on a boat") %></td></tr>					
-		<% end %>
-	
+<div id="slider-Attractiveness"></div>
+<table style="width:100%">
+	<tr>
+		<td style="text-align:left" width="12.5%">Very unlikely</td>
+		<td style="text-align:center" >Unlikely</td>
+		<td style="text-align:center" width="25%">Fair</td>
+		<td style="text-align:center" width="25%">Likely</td>
+		<td style="text-align:right" width="12.5%">Very likely</td>
+	</tr>
+</table>
+<br>
+<br>
+
+<p>
+Are you <b>familiar</b> with this place?
+  <label class="radio-inline"><input type="radio" name="familiarity" value="yes">Yes</label>
+  <label class="radio-inline"><input type="radio" name="familiarity" value="no">No</label>
+</p>
+
+<p>
+How <b>unique</b> is this place?
+</p>
+
+<div id="slider-Uniqueness"></div>
+<table style="width:100%">
+	<tr>
+		<td style="text-align:left" width="12.5%">I've seen it often</td>
+		<td style="text-align:center" >Quite ordinary</td>
+		<td style="text-align:center" width="25%">Fair</td>
+		<td style="text-align:center" width="25%">It's unique</td>
+		<td style="text-align:right" width="12.5%">I've never seen anything like this</td>
+	</tr>
+</table>
+<br>
+<br>
+
+<p>
+Do you consider this place <b>friendly</b>?
+    <label class="radio-inline"><input type="radio" name="friendliness" value="yes">Yes</label>
+    <label class="radio-inline"><input type="radio" name="friendliness" value="no">No</label>
+</p>
+
+<p>
+How does this place make you <b>feel</b>?
+</p>
+
+<div id="slider-SAM"></div>
+<table style="width:100%">
+	<tr>
+		<td style="text-align:left" width="12.5%">:-<</td>
+		<td style="text-align:center" >:-(</td>
+		<td style="text-align:center" width="25%">:-|</td>
+		<td style="text-align:center" width="25%">:-)</td>
+		<td style="text-align:right" width="12.5%">:-D</td>
+	</tr>
+</table>
+<br>
+<br>

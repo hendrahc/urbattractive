@@ -3,7 +3,7 @@
 </div>
 
 <h3>This test is for non-profit research purposes.</h3>
-<h3>Tell us which views are attractive!</h3>
+<h3>Tell us which locations are attractive!</h3>
 
 <br>
 
@@ -29,6 +29,9 @@
 
         <%= f.label :age %>
         <%= f.select :age, (17..50) %>
+
+        <%= f.label :nationality %>
+        <%= f.select :nationality, @nationalities %>
         <br>
         <br>
         <div class='center'>

@@ -1,0 +1,68 @@
+<h1>This is an example 2</h1>
+<!--<%= session[:test_set] %>
+<%= session[:subtask] %>
+<%= session[:first] %>-->
+
+<br>
+
+<div id="test_image">
+	<%= link_to image_tag('Training/train_1.jpg'), '#' %>
+</div>
+
+
+<p>
+If you are on vacation and want to find pleasure, would you <b>like to visit</b> this place?
+</p>
+
+<div id="slider-ACR"></div>
+<table style="width:100%">
+	<tr>
+		<td style="text-align:left" width="12.5%">Strongly no</td>
+		<td style="text-align:center" >No</td>
+		<td style="text-align:center" width="25%">Neutral</td>
+		<td style="text-align:center" width="25%">Yes</td>
+		<td style="text-align:right" width="12.5%">Strongly yes</td>
+	</tr>
+</table>
+<br>
+<br>
+
+<p>
+How <b>familiar</b> are you with this kind of place?
+</p>
+
+<div id="slider-ACR-Rec"></div>
+<table style="width:100%">
+	<tr>
+		<td style="text-align:left" width="12.5%">Very unfamiliar</td>
+		<td style="text-align:center" >Unfamiliar</td>
+		<td style="text-align:center" width="25%">Fair</td>
+		<td style="text-align:center" width="25%">Familiar</td>
+		<td style="text-align:right" width="12.5%">Strongly familiar</td>
+	</tr>
+</table>
+<br>
+<br>
+
+<p>
+Do you consider this place <b>friendly</b>?
+</p>
+
+<div id="slider-ACR-c"></div>
+<table style="width:100%">
+	<tr>
+		<td style="text-align:left" width="12.5%">Strongly no</td>
+		<td style="text-align:center" >No</td>
+		<td style="text-align:center" width="25%">not sure</td>
+		<td style="text-align:center" width="25%">Yes</td>
+		<td style="text-align:right" width="12.5%">Strongly yes</td>
+	</tr>
+</table>
+<br>
+
+<br>
+
+<div class="buttons">
+  <%= link_to "Next", ready_part2_path, class: "btn btn-large btn-primary" %>
+</div>
+

@@ -1,0 +1,23 @@
+<p><%= session[:loc_num] %></p>
+<div id="test_image" class="container">
+    <div class="row">
+        <%= link_to image_tag(@img1.filepath,class:'col-sm-3',style: 'width:24%;height:auto;'), '#' %>
+        <%= link_to image_tag(@img2.filepath,class:'col-sm-3',style: 'width:24%;height:auto;'), '#' %>
+        <%= link_to image_tag(@img3.filepath,class:'col-sm-3',style: 'width:24%;height:auto;'), '#' %>
+        <%= link_to image_tag(@img4.filepath,class:'col-sm-3',style: 'width:24%;height:auto;'), '#' %>
+    </div>
+</div>
+
+<%= form_for(@score) do |f| %>
+  <%= f.hidden_field :attractiveness, :id => "attractiveness" %>
+  <%= f.hidden_field :uniqueness, :id => "uniqueness" %>
+  <%= f.hidden_field :SAM, :id => "SAM" %>
+
+  <%= f.hidden_field :img_id, :value => session[:images][(session[:img_num].to_i)].to_i %>
+  <%= f.hidden_field :user_id, :value => session[:userid].to_s %>
+
+	<%= render 'layouts/question' %>
+
+<div class="buttons"><%= f.submit "Next", class: "btn btn-large btn-primary" %></div>
+
+<% end %>

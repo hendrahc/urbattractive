@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
 
   def new
+     @nationalities = ["Dutch","Indonesian","Others"]
      @title = "Register"
      @user = User.new
   end
@@ -11,8 +12,8 @@ class UsersController < ApplicationController
   def create  
     @user = User.new(user_params)
     if @user.save
-      #redirect_to intro_path
-      redirect_to ready_path
+      redirect_to intro_part1_path
+      #redirect_to ready_path
     else
       render 'new'
     end
@@ -34,14 +35,14 @@ class UsersController < ApplicationController
       @user.update_attribute(:content1, @user.content1)
       session[:content] = 2
       session[:img_num] = session[:img_num].to_i + 1
-      redirect_to show_path
+      redirect_to show_part1_path
     else 
       @user = User.find_by!(name: session[:userid])
       @user.content2 = params[:answer]
       @user.update_attribute(:content2, @user.content2)
       session[:content] = nil
       session[:img_num] = session[:img_num].to_i + 1
-      redirect_to show_path
+      redirect_to show_part1_path
     end 
   end
 

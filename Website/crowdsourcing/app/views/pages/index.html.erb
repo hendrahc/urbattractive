@@ -17,6 +17,9 @@
 	<tr><td><%= label_tag ("Age :") %>
 	<%= f.select(:age,options_for_select((17..50).step(1)))%></td></tr>
 
+	<tr><td><%= label_tag ("Nationality :") %>
+    <%= f.select(:nationality,options_for_select(session[:nationalities]))%></td></tr>
+
 </table>
 	<div class="buttons">
   	<%= f.submit "Click to continue", class: "btn btn-large btn-primary" %> 

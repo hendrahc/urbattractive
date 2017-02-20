@@ -12,19 +12,31 @@ Rails.application.routes.draw do
   get 'newuser' => 'users#new'
   post 'newuser' => 'users#create'
   get 'about' => 'pages#about'
-  get 'intro' => 'pages#intro'
-  get 'totraining' => 'pages#totraining'
-  get 'training' => 'pages#training'
-  get 'trainreco' => 'pages#trainreco'
-  get 'trainaest' => "pages#trainaest"
-  get 'trainend' => "pages#trainend"
-  get 'ready' => 'pages#ready'
-  get 'show' => 'scores#new'
-  get 'checkimage' => 'scores#checkimage'
+
+  get 'intro_part1' => 'pages#intro_part1'
+  get 'totraining_part1' => 'pages#totraining_part1'
+  get 'training_part1' => 'pages#training_part1'
+  get 'golden' => 'pages#golden'
+  get 'submit_golden' => 'pages#submit_golden'
+
+  get 'ready_part1' => 'pages#ready_part1'
+  get 'show_part1' => 'scores#show_part1'
+  get 'checkimage_part1' => 'scores#checkimage_part1'
+  get 'contentcheck_part1' => 'scores#contentcheck_part1'
+
+  get 'intro_part2' => 'pages#intro_part2'
+  get 'totraining_part2' => 'pages#totraining_part2'
+  get 'training_part2' => 'pages#training_part2'
+
+  get 'ready_part2' => 'pages#ready_part2'
+  get 'show_part2' => 'scores#show_part2'
+  get 'checkimage_part2' => 'scores#checkimage_part2'
+  get 'contentcheck_part2' => 'scores#contentcheck_part2'
+
   post 'update' => 'users#update'
   get 'content' => 'users#content'
   get 'contentanswer' => 'users#contentanswer'
-  get 'contentcheck' => 'scores#contentcheck'
+
   get 'end' => 'pages#end'
   get 'endwrong' => 'pages#endwrong'
 
