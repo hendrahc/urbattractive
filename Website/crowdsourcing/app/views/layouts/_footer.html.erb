@@ -1,7 +1,11 @@
 <footer class="footer"> 
   <nav> 
-    <ul> 
-      <li> <%= link_to "About",   about_path %> </li>  
+    <ul>
+    <% if request.path != "/newuser" && request.path != "" %>
+      <li>User: <%= session[:user]%> (<%= link_to "Logout", logout_path %>)</li>
+    <% end %>
+      <li> | </li>
+      <li> <%= link_to "About",   about_path %> </li>
     </ul> 
   </nav> 
   <small>

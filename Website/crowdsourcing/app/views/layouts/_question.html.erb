@@ -1,62 +1,77 @@
-<p>
-Would you <b>like to visit</b> this place?
-</p>
+<div id="start_time"></div>
 
-<div id="slider-Attractiveness"></div>
-<table style="width:100%">
-	<tr>
-		<td style="text-align:left" width="12.5%">Very unlikely</td>
-		<td style="text-align:center" >Unlikely</td>
-		<td style="text-align:center" width="25%">Fair</td>
-		<td style="text-align:center" width="25%">Likely</td>
-		<td style="text-align:right" width="12.5%">Very likely</td>
-	</tr>
-</table>
-<br>
-<br>
+<div id = "q1">
+    <hr>
+    <p>
+    Would you <b>like to visit</b> this place?
+    </p>
 
-<p>
-Are you <b>familiar</b> with this place?
-  <label class="radio-inline"><input type="radio" name="familiarity" value="yes">Yes</label>
-  <label class="radio-inline"><input type="radio" name="familiarity" value="no">No</label>
-</p>
+    <div id="slider-Attractiveness"></div>
+    <table style="width:100%">
+        <tr>
+            <td style="text-align:left" width="12.5%">Extremely unlikely</td>
+            <td style="text-align:center" >Unlikely</td>
+            <td style="text-align:center" width="25%">Neutral</td>
+            <td style="text-align:center" width="25%">Likely</td>
+            <td style="text-align:right" width="12.5%">Extremely likely</td>
+        </tr>
+    </table>
+</div>
 
-<p>
-How <b>unique</b> is this place?
-</p>
+<div id="q2" hidden>
+    <hr>
+    <p>
+    Are you <b>familiar</b> with this place?
+      <label class="btn btn-default"><input type="radio" name="familiarity" value="yes">Yes</label>
+      <label class="btn btn-default"><input type="radio" name="familiarity" value="no">No</label>
+    </p>
+</div>
 
-<div id="slider-Uniqueness"></div>
-<table style="width:100%">
-	<tr>
-		<td style="text-align:left" width="12.5%">I've seen it often</td>
-		<td style="text-align:center" >Quite ordinary</td>
-		<td style="text-align:center" width="25%">Fair</td>
-		<td style="text-align:center" width="25%">It's unique</td>
-		<td style="text-align:right" width="12.5%">I've never seen anything like this</td>
-	</tr>
-</table>
-<br>
-<br>
+<div id = "q3" hidden>
+    <hr>
+    <p>
+    How <b>unique</b> is this place?
+    </p>
 
-<p>
-Do you consider this place <b>friendly</b>?
-    <label class="radio-inline"><input type="radio" name="friendliness" value="yes">Yes</label>
-    <label class="radio-inline"><input type="radio" name="friendliness" value="no">No</label>
-</p>
+    <div id="slider-Uniqueness"></div>
+    <table style="width:100%">
+        <tr>
+            <td style="text-align:left" width="12.5%">I frequently see something like this</td>
+            <td style="text-align:center" >Ordinary</td>
+            <td style="text-align:center" width="25%">Neutral</td>
+            <td style="text-align:center" width="25%">Unique</td>
+            <td style="text-align:right" width="12.5%">I've never seen anything like this</td>
+        </tr>
+    </table>
+</div>
 
-<p>
-How does this place make you <b>feel</b>?
-</p>
+<div id="q4" hidden>
+    <hr>
+    <p>
+    Do you consider this place <b>friendly</b>?
+        <label class="btn btn-default"><input type="radio" name="friendliness" value="yes">Yes</label>
+        <label class="btn btn-default"><input type="radio" name="friendliness" value="no">No</label>
+    </p>
+</div>
 
-<div id="slider-SAM"></div>
-<table style="width:100%">
-	<tr>
-		<td style="text-align:left" width="12.5%">:-<</td>
-		<td style="text-align:center" >:-(</td>
-		<td style="text-align:center" width="25%">:-|</td>
-		<td style="text-align:center" width="25%">:-)</td>
-		<td style="text-align:right" width="12.5%">:-D</td>
-	</tr>
-</table>
-<br>
-<br>
+<div id="q5" hidden>
+    <hr>
+    <p>
+    How does this place make you <b>feel</b>?
+    </p>
+
+    <div id="slider-SAM" style="width:92%;  margin:0 auto;"></div>
+    <table style="width:100%">
+        <tr>
+            <td style="text-align:left" width="5%"><%= image_tag("SAM/SAM1.png", :id => "SAM1") %></td>
+            <td style="text-align:left" width="10%"></td>
+            <td style="text-align:center"  width="5%"><%= image_tag("SAM/SAM2.png", :id => "SAM2") %></td>
+            <td style="text-align:left" width="10%"></td>
+            <td style="text-align:center" width="5%"><%= image_tag("SAM/SAM3.png", :id => "SAM3") %></td>
+            <td style="text-align:left" width="10%"></td>
+            <td style="text-align:center" width="5%"><%= image_tag("SAM/SAM4.png", :id => "SAM4")%></td>
+            <td style="text-align:left" width="10%"></td>
+            <td style="text-align:right" width="5%"><%= image_tag("SAM/SAM5.png", :id => "SAM5") %></td>
+        </tr>
+    </table>
+</div>

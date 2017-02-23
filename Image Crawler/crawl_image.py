@@ -3,8 +3,8 @@ import random
 import requests
 import os
 
-n_image = 1000
-start_counter = 10000
+n_image = 100
+start_counter = 1
 start_c = 220051
 
 width = 600
@@ -14,9 +14,16 @@ pitch = -0.76
 
 eps = 0.00005
 
-image_loc = "../../Dataset/Images/"
-log_loc = "../../Dataset/"
+image_loc = "../../Dataset/Images_AMS1/"
+log_loc = "../../Dataset/log_AMS1.txt"
+prefix = "GSV_AMS1_"
 # coordinates
+
+#CPH
+#min_lat = 55.64
+#max_lat = 55.72
+#min_long = 12.51
+#max_long = 12.65
 
 min_lat = 52.29
 max_lat = 52.42
@@ -87,7 +94,7 @@ def process_location(lat, long, it):
 
     for k in range(0, 4):
         head = heading + 90 * k
-        imname = "GSV_"+str(it) + "_" + str(k+1) + ".jpg"
+        imname = prefix+str(it) + "_" + str(k+1) + ".jpg"
         filename = image_loc + imname
         download_image(lat, long, head, filename)
         log1 = str(it)+";"+imname+";"+str(lat)+";"+str(long)+";"+str(heading)
@@ -97,7 +104,7 @@ def process_location(lat, long, it):
     return log
 
 def start_crawling():
-    logfile = open(log_loc+"dataset.txt","a")
+    logfile = open(log_loc,"a")
     for iter in range(start_counter, start_counter + n_image):
         valid = 0
         while (not (valid)):
@@ -111,7 +118,7 @@ def start_crawling():
     logfile.close()
 
 def start_defined_crawling():
-    logfile = open(log_loc + "dataset.txt", "a")
+    logfile = open(log_loc, "a")
     input_filename = log_loc+"attractive_locs.txt"
     input_file = open(input_filename, "r")
     iter = start_c
@@ -126,5 +133,5 @@ def start_defined_crawling():
     logfile.close()
     input_file.close()
 
-# start_crawling()
-start_defined_crawling()
+start_crawling()
+#start_defined_crawling()

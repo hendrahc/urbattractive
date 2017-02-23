@@ -10,59 +10,102 @@
 </div>
 
 
-<p>
-If you are on vacation and want to find pleasure, would you <b>like to visit</b> this place?
-</p>
+<div id = "q1">
+    <hr>
+    <p>
+    Would you <b>like to visit</b> this place?
+    </p>
+    <i>Please select the rating based on your opinion about this place.</i>
 
-<div id="slider-ACR"></div>
-<table style="width:100%">
-	<tr>
-		<td style="text-align:left" width="12.5%">Strongly no</td>
-		<td style="text-align:center" >No</td>
-		<td style="text-align:center" width="25%">Neutral</td>
-		<td style="text-align:center" width="25%">Yes</td>
-		<td style="text-align:right" width="12.5%">Strongly yes</td>
-	</tr>
-</table>
-<br>
-<br>
-
-<p>
-How <b>familiar</b> are you with this kind of place?
-</p>
-
-<div id="slider-ACR-Rec"></div>
-<table style="width:100%">
-	<tr>
-		<td style="text-align:left" width="12.5%">Very unfamiliar</td>
-		<td style="text-align:center" >Unfamiliar</td>
-		<td style="text-align:center" width="25%">Fair</td>
-		<td style="text-align:center" width="25%">Familiar</td>
-		<td style="text-align:right" width="12.5%">Strongly familiar</td>
-	</tr>
-</table>
-<br>
-<br>
-
-<p>
-Do you consider this place <b>friendly</b>?
-</p>
-
-<div id="slider-ACR-c"></div>
-<table style="width:100%">
-	<tr>
-		<td style="text-align:left" width="12.5%">Strongly no</td>
-		<td style="text-align:center" >No</td>
-		<td style="text-align:center" width="25%">not sure</td>
-		<td style="text-align:center" width="25%">Yes</td>
-		<td style="text-align:right" width="12.5%">Strongly yes</td>
-	</tr>
-</table>
-<br>
-
-<br>
-
-<div class="buttons">
-  <%= link_to "Next", ready_part1_path, class: "btn btn-large btn-primary" %>
+    <div id="slider-Attractiveness"></div>
+    <table style="width:100%">
+        <tr>
+            <td style="text-align:left" width="12.5%">Very unlikely</td>
+            <td style="text-align:center" >Unlikely</td>
+            <td style="text-align:center" width="25%">Fair</td>
+            <td style="text-align:center" width="25%">Likely</td>
+            <td style="text-align:right" width="12.5%">Very likely</td>
+        </tr>
+    </table>
 </div>
+
+<div id="q2" hidden>
+    <hr>
+    <p>
+    Are you <b>familiar</b> with this place?
+      <label class="btn btn-default"><input type="radio" name="familiarity" value="yes">Yes</label>
+      <label class="btn btn-default"><input type="radio" name="familiarity" value="no">No</label>
+    </p>
+    <i>Please answer yes if you are familiar with this place, otherwise answer no.</i>
+</div>
+
+<div id = "q3" hidden>
+    <hr>
+    <p>
+    How <b>unique</b> is this place?
+    </p>
+    <i>Please select the rating based on your opinion about this place.</i>
+
+    <div id="slider-Uniqueness"></div>
+    <table style="width:100%">
+        <tr>
+            <td style="text-align:left" width="12.5%">I often see it</td>
+            <td style="text-align:center" >Quite ordinary</td>
+            <td style="text-align:center" width="25%">Fair</td>
+            <td style="text-align:center" width="25%">Quite unique</td>
+            <td style="text-align:right" width="12.5%">I've never seen anything like this</td>
+        </tr>
+    </table>
+</div>
+
+<div id="q4" hidden>
+    <hr>
+    <p>
+    Do you consider this place <b>friendly</b>?
+        <label class="btn btn-default"><input type="radio" name="friendliness" value="yes">Yes</label>
+        <label class="btn btn-default"><input type="radio" name="friendliness" value="no">No</label>
+    </p>
+    <i>Please answer yes if you think this place is friendly for you, otherwise answer no.</i>
+</div>
+
+<div id="q5" hidden>
+    <hr>
+    <p>
+    How does this place make you <b>feel</b>?
+    </p>
+    <i>Please select the rating based on your opinion about this place.</i>
+
+    <div id="slider-SAM" style="width:92%;  margin:0 auto;"></div>
+    <table style="width:100%">
+        <tr>
+            <td style="text-align:left" width="5%"><%= image_tag("SAM/SAM1.png", :id => "SAM1") %></td>
+            <td style="text-align:left" width="10%"></td>
+            <td style="text-align:center"  width="5%"><%= image_tag("SAM/SAM2.png", :id => "SAM2") %></td>
+            <td style="text-align:left" width="10%"></td>
+            <td style="text-align:center" width="5%"><%= image_tag("SAM/SAM3.png", :id => "SAM3") %></td>
+            <td style="text-align:left" width="10%"></td>
+            <td style="text-align:center" width="5%"><%= image_tag("SAM/SAM4.png", :id => "SAM4")%></td>
+            <td style="text-align:left" width="10%"></td>
+            <td style="text-align:right" width="5%"><%= image_tag("SAM/SAM5.png", :id => "SAM5") %></td>
+        </tr>
+    </table>
+</div>
+
+<div id="golden_q" hidden>
+    <hr>
+    <p>
+    Which objects are appeared in this image?
+    </p>
+    <i>Sometimes you are asked to choose which objects are appeared in the image.</i>
+    <i>In this example, you should check Bicycle and Building.</i>
+    <br>
+    <br>
+    <input type="checkbox" name="golden" value="a">Bicycle <br>
+    <input type="checkbox" name="golden" value="b">Canal/River <br>
+    <input type="checkbox" name="golden" value="c">Building <br>
+    <br>
+    <br>
+</div>
+
+<div class="buttons" id="next_btn" hidden><%= link_to "OK, I get it", ready_part1_path, class: "btn btn-large btn-primary" %></div>
 

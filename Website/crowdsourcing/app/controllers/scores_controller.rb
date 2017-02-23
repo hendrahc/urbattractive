@@ -1,6 +1,19 @@
 class ScoresController < ApplicationController
   def show_part1
-    if session[:img_num].to_i < session[:images].length
+    @title = "Task - Part 1"
+    if session[:checkimage]==1
+        @score = Score.new
+
+        #get a golden image
+        @golden_question = GoldenQuestion.find(session[:goldens][(session[:golden_num].to_i)])
+        @golden_im_num = @golden_question.img_id
+        @options = @golden_question.options
+        @img = Image.find(@golden_im_num)
+        session[:golden_num] = session[:golden_num].to_i + 1
+        if(session[:golden_num] > session[:goldens].length-1)
+            session[:golden_num] = 0
+        end
+    elsif session[:img_num].to_i < session[:images].length
       @score = Score.new
       #set image to be shown
       @img = Image.find((session[:images][(session[:img_num].to_i)].to_i))
@@ -10,11 +23,12 @@ class ScoresController < ApplicationController
   end
 
   def show_part2
+      @title = "Task - Part 2"
       if session[:loc_num].to_i < session[:locs].length
         @score = Score.new
         #set image to be shown
-        @loc_id = session[:locs][session[:loc_num].to_i]
-        @imgs = Image.where(Image.arel_table[:loc_id]==@loc_id).ids
+        @loc_id = session[:locs][(session[:loc_num].to_i)].to_i
+        @imgs = Image.where(loc_id: @loc_id).ids
         @img1 = Image.find(@imgs[0])
         @img2 = Image.find(@imgs[1])
         @img3 = Image.find(@imgs[2])
@@ -25,26 +39,42 @@ class ScoresController < ApplicationController
     end
 
   def create
-  #save score value to database (img id, user id, attractiveness, familiarity, uniqueness, friendliness, SAM)
-    @score = Score.new(score_params)
-    if @score.save
-      
-      if session[:img_num].to_i < session[:images].length
+  #save score value to database
+    if session[:checkimage]==1
+      #save answer of golden question
 
-          redirect_to checkimage_part1_path
-      else
-          redirect_to end_path
-      end 
-      
+    end
+
+    @score = Score.new(score_params)
+    @score.end_time = Time.now.strftime("%H:%M:%S %z")
+    if @score.save
+        if session[:part] == 1
+          if session[:img_num].to_i < session[:images].length
+              redirect_to checkimage_part1_path
+          else
+              redirect_to intro_part2_path
+          end
+        else
+          if session[:loc_num].to_i < session[:locs].length
+              session[:loc_num] = session[:loc_num].to_i + 1 #increment loc id
+              redirect_to show_part2_path
+          else
+              redirect_to end_path
+          end
+        end
     else
-      render '/show_part1'
+        if session[:part] == 1
+            render '/show_part1'
+        else
+            render '/show_part2'
+        end
     end
   end
 
   def contentcheck_part1
     session[:img_num] = session[:img_num].to_i + 1 #increment image id
     if session[:checkimage] == 1
-          redirect_to golden_path
+          redirect_to show_part1_path
     else
         if session[:img_num].to_i < session[:images].length
           redirect_to show_part1_path
@@ -55,7 +85,7 @@ class ScoresController < ApplicationController
   end
 
   def checkimage_part1
-      if ((session[:img_num]).to_i % 4) == 3
+      if ((session[:img_num]).to_i % 5) == 2
           session[:checkimage] = 1
       else 
           session[:checkimage] = 0
@@ -89,7 +119,11 @@ class ScoresController < ApplicationController
 private
 
   def score_params
-    params.require(:score).permit(:score, :img_id, :user_id, :scale, :recognizability, :lgt)
+    params.require(:score).permit(:user_id, :part, :loc_id, :img_id, :attractiveness, :familiarity, :uniqueness, :friendliness, :SAM, :golden_answer, :start_time)
+  end
+
+  def golden_params
+    params.require()
   end
 
 end

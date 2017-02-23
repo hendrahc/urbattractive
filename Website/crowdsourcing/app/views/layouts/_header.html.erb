@@ -1,0 +1,8 @@
+<div class="header">
+
+<% if request.path != "/newuser" && request.path != "" %>
+    <% if !session[:userid]%>
+        <% controller.redirect_to newuser_path %>
+     <% end %>
+<% end %>
+</div>

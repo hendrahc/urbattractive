@@ -6,12 +6,21 @@
   <%= f.hidden_field :attractiveness, :id => "attractiveness" %>
   <%= f.hidden_field :uniqueness, :id => "uniqueness" %>
   <%= f.hidden_field :SAM, :id => "SAM" %>
+  <%= f.hidden_field :familiarity, :id => "familiarity" %>
+  <%= f.hidden_field :friendliness, :id => "friendliness" %>
+  <%= f.hidden_field :start_time, :id => "start_time" %>
 
+  <%= f.hidden_field :part, :id => "part" %>
   <%= f.hidden_field :img_id, :value => session[:images][(session[:img_num].to_i)].to_i %>
   <%= f.hidden_field :user_id, :value => session[:userid].to_s %>
+  <%= f.hidden_field :golden_answer, :id => "golden_answer" %>
 
 	<%= render 'layouts/question' %>
 
-<div class="buttons"><%= f.submit "Next", class: "btn btn-large btn-primary" %></div>
+<input id="checkimage" value="<%= session[:checkimage] %>" type="hidden" />
+<input id="options" value="<%= @options %>" type="hidden" />
+
+<div id="golden_q" hidden></div>
+<div class="buttons" id="next_btn" hidden><%= f.submit "Next", class: "btn btn-large btn-primary" %></div>
 
 <% end %>

@@ -1,6 +1,11 @@
 <h1>Image Rating Test</h1>
 
-<p>You have reached the end of the test. Thank you for taking part in the test!</p>
+<p>You have reached the end of the task. Thank you for taking part in the test!</p>
+
+
+<div class="buttons">
+  <%= link_to "Back to Home", logout_path, class: "btn btn-large btn-primary" %>
+</div>
 
 <p>
 <% if session[:vcode].nil? %>

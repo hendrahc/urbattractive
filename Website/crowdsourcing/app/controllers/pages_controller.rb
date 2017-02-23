@@ -2,27 +2,32 @@ class PagesController < ApplicationController
   def index
       @title = "Home"
       if params[:user].nil? && params[:campaign].nil? && params[:mw].nil?
-        session[:campaign] = 99
-        session[:userid] = rand(1..1000)
-        session[:locs] = CampaignSet.find(session[:campaign]).locs
-        session[:scale] = CampaignSet.find(session[:campaign]).scale
         redirect_to newuser_path
-      elsif 
-        session[:campaign] = 99  # session[:campaign] = params[:campaign]
-        session[:userid] = params[:user].to_s
-        @finalstring = params[:mw] += params[:user] += "8c25a8f5e42c00a6f814f45ac764084f4b20a5c476be47ac2a674b82d0ba541f"
-        session[:vcode] = Digest::SHA2.hexdigest(@finalstring)
-        session[:vcode] = "mw-" + session[:vcode].to_s
-        session[:locs] = CampaignSet.find(session[:campaign]).locs
-        session[:scale] = CampaignSet.find(session[:campaign]).scale
-        session[:microworkers] = '1'
-        session[:content] = nil
+      else
+         redirect_to ready_part1_path
       end
+
+
+      #elsif
+      #  session[:campaign] = 99  # session[:campaign] = params[:campaign]
+      #  session[:userid] = params[:user].to_s
+      #  @finalstring = params[:mw] += params[:user] += "8c25a8f5e42c00a6f814f45ac764084f4b20a5c476be47ac2a674b82d0ba541f"
+      #  session[:vcode] = Digest::SHA2.hexdigest(@finalstring)
+      #  session[:vcode] = "mw-" + session[:vcode].to_s
+      #  session[:locs] = CampaignSet.find(session[:campaign]).locs
+      #  session[:scale] = CampaignSet.find(session[:campaign]).scale
+      #  session[:microworkers] = '1'
+      #  session[:content] = nil
+      #end
   end
 
-  def intro
-      @title = "Instructions"
+  def intro_part1
+      @title = "Instructions - Part 1"
   end
+
+  def intro_part2
+        @title = "Instructions - Part 2"
+    end
 
   def help
       @title = "Help"
@@ -33,9 +38,26 @@ class PagesController < ApplicationController
   end
 
   def contact
+    @title = "Contact"
   end
 
   def end
+    @title = "End"
+  end
+
+  def golden
+    if session[:part] == 1
+        @title = "Part 1"
+    else
+        @title = "Part 2"
+     end
+  end
+
+  def logout
+    @user = User.find(session[:userid])
+    @user.end_time = Time.now.strftime("%I:%M:%S %z")
+    @user.save
+
     session[:userid] = nil
     session[:campaign] = nil
     session[:locs] = nil
@@ -44,6 +66,8 @@ class PagesController < ApplicationController
     session[:scale] = nil
     session[:microworkers] = nil
     session[:content] = nil
+
+    redirect_to root_path
   end
 
   def training
@@ -71,24 +95,29 @@ class PagesController < ApplicationController
   end
 
   def ready_part1
-    @title = "Begin Test"
-     #randomize images
-     session[:locs] = session[:locs].split(" ")
-     session[:images] = Image.where(Image.arel_table[:loc_id].in(session[:locs])).ids
-     session[:img_num] = '0';
-     session[:part] = 1
+    @title = "Begin Part 1"
   end
 
   def ready_part2
-    @title = "Begin Test - Part 2"
+    @title = "Begin Part 2"
     session[:loc_num] = '0';
     session[:part] = 2
   end
 
-  def totraining
-    @title = "Training"
+  def totraining_part1
+    @title = "Example - Part 1"
     session[:training] = nil
   end
+
+  def training_part1
+      @title = "Example - Part 1"
+      session[:training] = nil
+  end
+
+  def totraining_part2
+      @title = "Trial - Part 1"
+      session[:training] = nil
+    end
 
   def submit_golden
     if session[:part] == 1
