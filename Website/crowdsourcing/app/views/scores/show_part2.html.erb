@@ -14,7 +14,6 @@
 <%= form_for(@score) do |f| %>
   <%= f.hidden_field :attractiveness, :id => "attractiveness" %>
   <%= f.hidden_field :uniqueness, :id => "uniqueness" %>
-  <%= f.hidden_field :SAM, :id => "SAM" %>
   <%= f.hidden_field :familiarity, :id => "familiarity" %>
   <%= f.hidden_field :friendliness, :id => "friendliness" %>
   <%= f.hidden_field :start_time, :id => "start_time" %>
@@ -23,8 +22,16 @@
   <%= f.hidden_field :loc_id, :value => session[:locs][(session[:loc_num].to_i)].to_i %>
   <%= f.hidden_field :user_id, :value => session[:userid].to_s %>
 
+  <%= f.hidden_field :pleasure, :id => "pleasure" %>
+  <%= f.hidden_field :arousal, :id => "arousal" %>
+  <%= f.hidden_field :dominance, :id => "dominance" %>
+
 	<%= render 'layouts/question' %>
+
+<input id="log_code" value="<%= @log_code %>" type="hidden" />
 
 <div class="buttons" id="next_btn" hidden><%= f.submit "Next", class: "btn btn-large btn-primary" %></div>
 
 <% end %>
+
+<%= javascript_include_tag "external/logger" %>

@@ -15,16 +15,16 @@
     <p>
     Would you <b>like to visit</b> this place?
     </p>
-    <i>Please select the rating based on your opinion about this place.</i>
+    <i>Please select <b>one</b> of the following options.</i>
 
     <div id="slider-Attractiveness"></div>
     <table style="width:100%">
         <tr>
-            <td style="text-align:left" width="12.5%">Very unlikely</td>
+            <td style="text-align:left" width="12.5%">Extremely unlikely</td>
             <td style="text-align:center" >Unlikely</td>
-            <td style="text-align:center" width="25%">Fair</td>
+            <td style="text-align:center" width="25%">Neutral</td>
             <td style="text-align:center" width="25%">Likely</td>
-            <td style="text-align:right" width="12.5%">Very likely</td>
+            <td style="text-align:right" width="12.5%">Extremely likely</td>
         </tr>
     </table>
 </div>
@@ -44,15 +44,15 @@
     <p>
     How <b>unique</b> is this place?
     </p>
-    <i>Please select the rating based on your opinion about this place.</i>
+    <i>Please select <b>one</b> of the following options.</i>
 
     <div id="slider-Uniqueness"></div>
     <table style="width:100%">
         <tr>
-            <td style="text-align:left" width="12.5%">I often see it</td>
-            <td style="text-align:center" >Quite ordinary</td>
-            <td style="text-align:center" width="25%">Fair</td>
-            <td style="text-align:center" width="25%">Quite unique</td>
+            <td style="text-align:left" width="12.5%">I frequently see something like this</td>
+            <td style="text-align:center" >Ordinary</td>
+            <td style="text-align:center" width="25%">Neutral</td>
+            <td style="text-align:center" width="25%">Unique</td>
             <td style="text-align:right" width="12.5%">I've never seen anything like this</td>
         </tr>
     </table>
@@ -73,39 +73,23 @@
     <p>
     How does this place make you <b>feel</b>?
     </p>
-    <i>Please select the rating based on your opinion about this place.</i>
-
-    <div id="slider-SAM" style="width:92%;  margin:0 auto;"></div>
-    <table style="width:100%">
-        <tr>
-            <td style="text-align:left" width="5%"><%= image_tag("SAM/SAM1.png", :id => "SAM1") %></td>
-            <td style="text-align:left" width="10%"></td>
-            <td style="text-align:center"  width="5%"><%= image_tag("SAM/SAM2.png", :id => "SAM2") %></td>
-            <td style="text-align:left" width="10%"></td>
-            <td style="text-align:center" width="5%"><%= image_tag("SAM/SAM3.png", :id => "SAM3") %></td>
-            <td style="text-align:left" width="10%"></td>
-            <td style="text-align:center" width="5%"><%= image_tag("SAM/SAM4.png", :id => "SAM4")%></td>
-            <td style="text-align:left" width="10%"></td>
-            <td style="text-align:right" width="5%"><%= image_tag("SAM/SAM5.png", :id => "SAM5") %></td>
-        </tr>
-    </table>
+    <i>To answer this, please <b>move the mouse pointer inside the box</b> which contains a face picture. The facial expression will change according to the pointer’s position (for example, move it to the right to make the face happier). Click whenever the facial expression best matches your feeling.
+</i>
+    <div class="offset5">
+        <div id="affectchanger_div" hidden><input type="button" id="affectchanger" style="width:100px" class="btn btn-default" value="Change"></div>
+        <canvas id="affect" width="100px" height="100px" style="border:0; padding:0;">
+        </canvas>
+    </div>
 </div>
 
 <div id="golden_q" hidden>
-    <hr>
-    <p>
-    Which objects are appeared in this image?
-    </p>
-    <i>Sometimes you are asked to choose which objects are appeared in the image.</i>
-    <i>In this example, you should check Bicycle and Building.</i>
-    <br>
-    <br>
-    <input type="checkbox" name="golden" value="a">Bicycle <br>
-    <input type="checkbox" name="golden" value="b">Canal/River <br>
-    <input type="checkbox" name="golden" value="c">Building <br>
-    <br>
-    <br>
 </div>
 
-<div class="buttons" id="next_btn" hidden><%= link_to "OK, I get it", ready_part1_path, class: "btn btn-large btn-primary" %></div>
+<input id="options" value="Bicycle|Canal/River|Building" type="hidden" />
+<input id="checkimage" value="1" type="hidden" />
+
+<div class="buttons" id="next_btn" hidden>
+<div><i>After you have answered all the questions, click Next. <br> You <b>cannot change</b> your answers after you click Next!</i></div><br>
+<%= link_to "Next", ready_part1_path, class: "btn btn-large btn-primary" %></div>
+<div id="thisistraining"></div>
 

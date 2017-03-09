@@ -59,19 +59,9 @@
     <p>
     How does this place make you <b>feel</b>?
     </p>
-
-    <div id="slider-SAM" style="width:92%;  margin:0 auto;"></div>
-    <table style="width:100%">
-        <tr>
-            <td style="text-align:left" width="5%"><%= image_tag("SAM/SAM1.png", :id => "SAM1") %></td>
-            <td style="text-align:left" width="10%"></td>
-            <td style="text-align:center"  width="5%"><%= image_tag("SAM/SAM2.png", :id => "SAM2") %></td>
-            <td style="text-align:left" width="10%"></td>
-            <td style="text-align:center" width="5%"><%= image_tag("SAM/SAM3.png", :id => "SAM3") %></td>
-            <td style="text-align:left" width="10%"></td>
-            <td style="text-align:center" width="5%"><%= image_tag("SAM/SAM4.png", :id => "SAM4")%></td>
-            <td style="text-align:left" width="10%"></td>
-            <td style="text-align:right" width="5%"><%= image_tag("SAM/SAM5.png", :id => "SAM5") %></td>
-        </tr>
-    </table>
+    <div class="offset4">
+        <div id="affectchanger_div" hidden><input type="button" id="affectchanger" style="width:100px" class="btn btn-default" value="Change"></div>
+        <canvas id="affect" width="100px" height="100px" style="border:0; padding:0;">
+        </canvas>
+    </div>
 </div>

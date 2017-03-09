@@ -6,17 +6,20 @@ class ScoresController < ApplicationController
 
         #get a golden image
         @golden_question = GoldenQuestion.find(session[:goldens][(session[:golden_num].to_i)])
-        @golden_im_num = @golden_question.img_id
+        @imgid = @golden_question.img_id
         @options = @golden_question.options
-        @img = Image.find(@golden_im_num)
+        @img = Image.find(@imgid)
         session[:golden_num] = session[:golden_num].to_i + 1
         if(session[:golden_num] > session[:goldens].length-1)
             session[:golden_num] = 0
         end
+        @log_code = "1|"+@golden_question.img_id.to_s+"|"+session[:userid].to_s;
     elsif session[:img_num].to_i < session[:images].length
       @score = Score.new
       #set image to be shown
       @img = Image.find((session[:images][(session[:img_num].to_i)].to_i))
+      @imgid = (session[:images][(session[:img_num].to_i)].to_i);
+      @log_code = "1|"+@imgid.to_s+"|"+session[:userid].to_s;
     else
        redirect_to intro_part2_path
     end 
@@ -33,6 +36,7 @@ class ScoresController < ApplicationController
         @img2 = Image.find(@imgs[1])
         @img3 = Image.find(@imgs[2])
         @img4 = Image.find(@imgs[3])
+        @log_code = "2|"+@loc_id.to_s+"|"+session[:userid].to_s;
       else
          redirect_to end_path
       end
@@ -119,7 +123,7 @@ class ScoresController < ApplicationController
 private
 
   def score_params
-    params.require(:score).permit(:user_id, :part, :loc_id, :img_id, :attractiveness, :familiarity, :uniqueness, :friendliness, :SAM, :golden_answer, :start_time)
+    params.require(:score).permit(:user_id, :part, :loc_id, :img_id, :attractiveness, :familiarity, :uniqueness, :friendliness, :pleasure, :arousal, :dominance, :golden_answer, :start_time)
   end
 
   def golden_params

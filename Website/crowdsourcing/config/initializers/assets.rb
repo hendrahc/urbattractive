@@ -16,3 +16,12 @@ Rails.application.config.assets.precompile += %w( external/jquery/jquery.js )
 Rails.application.config.assets.precompile += %w( jquery-ui.min.js )
 Rails.application.config.assets.precompile += %w( scales.js )
 Rails.application.config.assets.precompile += %w( buttons.js )
+
+Rails.application.config.assets.precompile += %w( external/jquery/jquery.mobile-1.1.0.min.js )
+Rails.application.config.assets.precompile += %w( external/jquery/jquery.ui.affectbutton.js )
+Rails.application.config.assets.precompile += %w( external/jquery/jquery.ui.affectbutton.mobile.js)
+
+Rails.application.config.assets.precompile += %w( external/logger.js)
+Rails.application.config.assets.precompile += %w( external/firebase.js)
+
+Rails.application.config.assets.precompile += %w( jquery.mobile-1.0.1.min.css )
