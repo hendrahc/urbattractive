@@ -2,10 +2,11 @@ import urllib
 import random
 import requests
 import os
+import random
 
 n_image = 100
 start_counter = 1
-start_c = 220051
+start_c = 1
 
 width = 600
 height = 400
@@ -14,9 +15,9 @@ pitch = -0.76
 
 eps = 0.00005
 
-image_loc = "../../Dataset/Images_AMS1/"
-log_loc = "../../Dataset/log_AMS1.txt"
-prefix = "GSV_AMS1_"
+image_loc = "../../Dataset/Images_PILOT/"
+log_loc = "../../Dataset/log_PILOT.txt"
+prefix = "GSV_PILOT_"
 # coordinates
 
 #CPH
@@ -46,7 +47,7 @@ def get_heading(lat, long):
 
     #default
     if(1):
-        return 0
+        return random.randint(0,359)
 
     d_lat = lat + 10 * eps
     d_long = long
@@ -93,11 +94,11 @@ def process_location(lat, long, it):
     log = ""
 
     for k in range(0, 4):
-        head = heading + 90 * k
+        head = (heading + 90 * k)%360
         imname = prefix+str(it) + "_" + str(k+1) + ".jpg"
         filename = image_loc + imname
         download_image(lat, long, head, filename)
-        log1 = str(it)+";"+imname+";"+str(lat)+";"+str(long)+";"+str(heading)
+        log1 = str(it)+";"+imname+";"+str(lat)+";"+str(long)+";"+str(head)
         log = log+"\n"+log1
 
     #print(location + " heading:" + str(heading))

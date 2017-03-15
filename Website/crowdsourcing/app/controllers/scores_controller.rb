@@ -111,10 +111,10 @@ class ScoresController < ApplicationController
   end
 
   def checkimage_part2
-      if ((session[:loc_num]).to_i % 4) == 3
+      if ((session[:loc_num]).to_i == 10) || ((session[:loc_num]).to_i == 20) || ((session[:loc_num]).to_i == 40) || ((session[:loc_num]).to_i == 50) || ((session[:loc_num]).to_i == 70)
           session[:checkloc] = 1
       else
-          session[:checkloc] = 0
+          session[:checkloc] = 0 
       end
       redirect_to contentcheck_part2_path
   end
