@@ -89,10 +89,15 @@ class ScoresController < ApplicationController
   end
 
   def checkimage_part1
-      if ((session[:img_num]).to_i % 5) == 2
-          session[:checkimage] = 1
-      else 
-          session[:checkimage] = 0
+      if session[:checkimage] == 1
+         session[:img_num] = session[:img_num].to_i - 1 #backtrack
+         session[:checkimage] = 0
+      else
+          if ((session[:img_num]).to_i == 10) || ((session[:img_num]).to_i == 20) || ((session[:img_num]).to_i == 40) || ((session[:img_num]).to_i == 60) || ((session[:img_num]).to_i == 70)
+               session[:checkimage] = 1
+          else
+               session[:checkimage] = 0
+          end
       end
       redirect_to contentcheck_part1_path
   end

@@ -1,0 +1,6 @@
+id,img_id,options,answer
+1,10001,Canal/River|Red Car|Building,a111
+2,10002,Canal/River|Yellow Car|Building,a001
+3,10003,Sky|Blue Car|Canal/River,a101
+4,10004,Sky|Building|Blue Car,a110
+5,10005,Canal/River|Building|Red Car,a010
