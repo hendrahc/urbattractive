@@ -4,9 +4,9 @@ import requests
 import os
 import random
 
-n_image = 100
-start_counter = 101
-start_c = 977
+n_image = 300
+start_counter = 301
+start_c = 401
 
 width = 600
 height = 400
@@ -134,5 +134,5 @@ def start_defined_crawling():
     logfile.close()
     input_file.close()
 
-#start_crawling()
-start_defined_crawling()
+start_crawling()
+#start_defined_crawling()
