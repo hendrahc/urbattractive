@@ -1,17 +1,17 @@
-var imgLoc = "../../../Dataset/Images/";
+var imgLoc = "../../../Dataset/PILOT/";
 
 function showIm(loc_id) {
 	var i1 = document.getElementById('img1');
-	i1.src = imgLoc+"GSV_"+loc_id+"_1.jpg";
+	i1.src = imgLoc+"GSV_PILOT_"+loc_id+"_1.jpg";
 	
 	var i2 = document.getElementById('img2');
-	i2.src = imgLoc+"GSV_"+loc_id+"_2.jpg";
+	i2.src = imgLoc+"GSV_PILOT_"+loc_id+"_2.jpg";
 	
 	var i3 = document.getElementById('img3');
-	i3.src = imgLoc+"GSV_"+loc_id+"_3.jpg";
+	i3.src = imgLoc+"GSV_PILOT_"+loc_id+"_3.jpg";
 	
 	var i4 = document.getElementById('img4');
-	i4.src = imgLoc+"GSV_"+loc_id+"_4.jpg";
+	i4.src = imgLoc+"GSV_PILOT_"+loc_id+"_4.jpg";
 }
 function initMap() {
 	var myLatLng = {lat: 52.35, lng: 4.85};

@@ -1,7 +1,7 @@
 import json
 
-input_filename = "../../../Dataset/dataset_CPH.txt"
-output_filename = "../Locator/coordinates_CPH.js"
+input_filename = "../../../Dataset/dataset_PILOT.txt"
+output_filename = "../Locator/coordinates_PILOT.js"
 input_file = open(input_filename,"r")
 output_file = open(output_filename,"w")
 

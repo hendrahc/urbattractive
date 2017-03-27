@@ -1,9 +1,9 @@
 import glob
 import os
 
-input_loc = "../../Dataset/Batch1/"
-input_filename = "../../Dataset/dataset.txt"
-output_filename = "../../Dataset/dataset_batch1.txt"
+input_loc = "../../Dataset/PILOT/"
+input_filename = "../../Dataset/log_PILOT.txt"
+output_filename = "../../Dataset/dataset_PILOT.txt"
 
 input_file = open(input_filename,"r")
 output_file = open(output_filename,"w")

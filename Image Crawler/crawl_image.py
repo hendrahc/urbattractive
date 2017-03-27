@@ -5,8 +5,8 @@ import os
 import random
 
 n_image = 100
-start_counter = 1
-start_c = 1
+start_counter = 101
+start_c = 977
 
 width = 600
 height = 400
@@ -15,8 +15,8 @@ pitch = -0.76
 
 eps = 0.00005
 
-image_loc = "../../Dataset/Images_PILOT/"
-log_loc = "../../Dataset/log_PILOT.txt"
+image_loc = "../../Dataset/Images_PILOT2/"
+log_loc = "../../Dataset/log_PILOT2.txt"
 prefix = "GSV_PILOT_"
 # coordinates
 
@@ -120,7 +120,7 @@ def start_crawling():
 
 def start_defined_crawling():
     logfile = open(log_loc, "a")
-    input_filename = log_loc+"attractive_locs.txt"
+    input_filename = "../../Dataset/manual_locs.txt"
     input_file = open(input_filename, "r")
     iter = start_c
     for line in input_file:
@@ -134,5 +134,5 @@ def start_defined_crawling():
     logfile.close()
     input_file.close()
 
-start_crawling()
-#start_defined_crawling()
+#start_crawling()
+start_defined_crawling()

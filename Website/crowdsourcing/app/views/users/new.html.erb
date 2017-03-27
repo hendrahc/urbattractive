@@ -15,7 +15,6 @@
 
       <%= form_for(@user) do |f| %>
         <%= f.hidden_field :id, :value => session[:userid] %>
-        <%= f.hidden_field :campaign_id, :value => session[:campaign] %>
         <%= f.hidden_field :start_time, :value => Time.now.strftime("%I:%M:%S %z") %>
 
         <%= f.label :name %>
@@ -32,6 +31,10 @@
 
         <%= f.label :nationality %>
         <%= f.select :nationality, @nationalities %>
+
+        <%= f.label "Questions Set" %>
+        <%= f.select :campaign_id, options_for_select([1,2,3,4,5]) %>
+
         <br>
         <br>
         <div class='center'>

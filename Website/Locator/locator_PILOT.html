@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Urban Images</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #main {
+        height: 100%;
+      }
+	  #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+	<script src="bootstrap.min.js"></script>
+	<link rel=stylesheet href="bootstrap.min.css">
+  </head>
+  <body>
+	<div id="main" class="row">
+		<div id="map" class="col-sm-8"></div>
+		<div id="imgshow" class="col-sm-2">
+			<img class="img-responsive" id="img1" alt="img1" height = "10">
+			<img class="img-responsive" id="img2" alt="img2">
+			<img class="img-responsive" id="img3" alt="img3">
+			<img class="img-responsive" id="img4" alt="img4">
+		</div>
+	</div>
+	
+	<script src="coordinates_PILOT.js"></script>
+	<script src="gsv_api.js"></script>
+	
+
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfHsH8ImU2pDZQOtwBLiNp41OW0FRj_UQ&callback=initMap">
+    </script>
+  </body>
+</html>
