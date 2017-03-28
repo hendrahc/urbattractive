@@ -5,7 +5,7 @@ import os
 import random
 
 n_image = 300
-start_counter = 301
+start_counter = 401
 start_c = 401
 
 width = 600
