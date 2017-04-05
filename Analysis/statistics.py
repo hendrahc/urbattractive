@@ -1,43 +1,98 @@
+import os
+os.chdir("Analysis")
+
 import pandas as pd
 import numpy as np
 from sklearn import linear_model
+import matplotlib.pyplot as plt
 
-input_filename = "Data/prepilot.csv"
-img_data_filename = "Data/images.csv"
-loc_im_filename = "Data/loc_im.csv"
+def normalize(df):
+    # normalization
+    df["familiarity"] = df["familiarity"].map({'yes': 5, 'no': 1})
+    df["friendliness"] = df["friendliness"].map({'yes': 5, 'no': 1})
+    df["pleasure"] = (df["pleasure"] * 2) + 3
+    df["arousal"] = (df["arousal"] * 2) + 3
+    df["dominance"] = (df["dominance"] * 2) + 3
+
+    df["img_id"] = df["img_id"].fillna(-99).astype(int)
+    df["loc_id"] = df["loc_id"].fillna(-99).astype(int)
+
+    return df
+
+def read_data(inp):
+    df = pd.read_csv(inp)
+    df = normalize(df)
+
+    df_clean =  df[df["user_id"] >= 17]
+    df_part1 = df_clean[df["part"].isin([0,1])]
+    df_part2 = df_clean[df["part"]==2]
+    return [df,df_part1,df_part2]
+
+def read_ref(img_data_f,loc_im_f):
+    df_img = pd.read_csv(img_data_f)
+    df_loc_im = pd.read_csv(loc_im_f)
+    views_im = {}
+    for index, row in df_loc_im.iterrows():
+        views_im[row["loc_id"]] = {"img1": row["img1"], "img2": row["img2"], "img3": row["img3"], "img4": row["img4"]}
+    return [df_img,views_im]
 
 
-df = pd.read_csv(input_filename)
-#normalization
-df["familiarity"] = df["familiarity"].map({'yes': 5, 'no': 1})
-df["friendliness"] = df["friendliness"].map({'yes': 5, 'no': 1})
-df["pleasure"] = (df["pleasure"]*2)+3
-df["arousal"] = (df["arousal"]*2)+3
-df["dominance"] = (df["dominance"]*2)+3
+def generate_loc_im(in_file,out_file):
+    imm = pd.read_csv(in_file)
+    loc_im = {}
+    for idx,row in imm.iterrows():
+        if row["loc_id"] > 0:
+            loc = str(row["loc_id"])
+            im = str(row["id"])
+            if loc in loc_im:
+                loc_im[loc] = loc_im[loc] + "," + im
+            else:
+                loc_im[loc] = "" + im
 
-df_part1 = df[df["part"].isin([0,1])]
-df_part2 = df[df["part"]==2]
+    outf = open(out_file, 'w')
+    outf.write("loc_id,img1,img2,img3,img4\n")
+
+    for r,v in loc_im.items():
+        outf.write(r+","+v+"\n")
+
+def corr_mat(dat):
+    #compute correlation matrix
+    df_attrib_scores =  df[["attractiveness","familiarity","uniqueness","friendliness","pleasure","arousal","dominance"]]
+    correl_mat = df_attrib_scores.corr()
+    return correl_mat
+
+def aggregate_data_part1(df,df_img):
+    df_aggr = pd.DataFrame(columns=["img_id", "img_path", "num_user","mean","median","var"])
+    for idx,row in df.iterrows():
+        img_id = int(row["img_id"])
+        df_filtered = df[df["img_id"]==img_id]
+        values = df_filtered["attractiveness"].values
+
+        newdat = {}
+        newdat["img_id"] = img_id
+        newdat["img_path"] = df_img[df_img["id"]==img_id]["filepath"].values[0]
+        newdat["num_user"] = df_filtered.shape[0]
+        newdat["mean"] = np.nanmean(values)
+        newdat["median"] = np.nanmedian(values)
+        newdat["var"] = np.nanvar(values)
+        df_aggr = df_aggr.append(newdat,ignore_index=True)
+    df_aggr["img_id"] = df_aggr["img_id"].astype(int)
+    df_aggr["num_user"] = df_aggr["num_user"].astype(int)
+    df_aggr["median"] = df_aggr["median"].astype(int)
+    return df_aggr
+
+def save_df(df,outname):
+    df.to_csv(outname,sep=",")
+
+create_dataset_input(data,input_loc,output_loc):
+    for idx, row in data.iterrows():
+        
 
 
-
-#compute correlation matrix
-df_attrib_scores =  df[["attractiveness","familiarity","uniqueness","friendliness","pleasure","arousal","dominance"]]
-
-correl_mat = df_attrib_scores.corr()
-
-
-df_part1[["attractiveness","familiarity","uniqueness","friendliness","pleasure","arousal","dominance"]].corr()
 
 
 
 #attractiveness function
-df_images = pd.read_csv(img_data_filename)
-
-df_loc_im = pd.read_csv(loc_im_filename)
-views_im = {}
-for index,row in df_loc_im.iterrows():
-    views_im[row["loc_id"]] = {"img1": row["img1"],"img2": row["img2"], "img3": row["img3"], "img4": row["img4"]}
-
 df_scores = pd.DataFrame(columns=["user_id","loc_id","overall","img1","img2","img3","img4"])
 
 user_ids = [7,8,9,10]
@@ -100,3 +155,28 @@ df_aggr_part2 = df_part2.groupby(["img_id"])[["attractiveness","familiarity","un
 
 
 df_scores_aggr = df_scores.groupby(["loc_id"])[["loc_id","overall","img1","img2","img3","img4"]].mean()
+
+
+
+
+
+
+### MAIN ###
+
+#parameters
+input_filename = "CrowdData/pilot_judgements.csv"
+img_data_filename = "Data/images.csv"
+loc_im_filename = "Data/loc_im.csv"
+aggr_part1_filename = "CrowdData/pilot_agregates_part1.csv"
+input_image_loc = '../Website/crowdsourcing/public/images'
+dataset_image_loc = 'InputImages/Training'
+
+
+#activities
+[df,df_part1,df_part2] = read_data(input_filename)
+[df_img,loc_im] = read_ref(img_data_filename,loc_im_filename)
+
+df_aggr_part1 = aggregate_data_part1(df_part1,df_img)
+save_df(df_aggr_part1,aggr_part1_filename)
+
+create_dataset_input(df_aggr_part1,input_image_loc,dataset_image_loc)
