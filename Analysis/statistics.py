@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from sklearn import linear_model
 import matplotlib.pyplot as plt
+from shutil import copy
 
 def normalize(df):
     # normalization
@@ -63,19 +64,20 @@ def corr_mat(dat):
 
 def aggregate_data_part1(df,df_img):
     df_aggr = pd.DataFrame(columns=["img_id", "img_path", "num_user","mean","median","var"])
-    for idx,row in df.iterrows():
-        img_id = int(row["img_id"])
+    for idx,row in df_img.iterrows():
+        img_id = int(row["id"])
         df_filtered = df[df["img_id"]==img_id]
         values = df_filtered["attractiveness"].values
 
-        newdat = {}
-        newdat["img_id"] = img_id
-        newdat["img_path"] = df_img[df_img["id"]==img_id]["filepath"].values[0]
-        newdat["num_user"] = df_filtered.shape[0]
-        newdat["mean"] = np.nanmean(values)
-        newdat["median"] = np.nanmedian(values)
-        newdat["var"] = np.nanvar(values)
-        df_aggr = df_aggr.append(newdat,ignore_index=True)
+        if(df_filtered.shape[0]>0):
+            newdat = {}
+            newdat["img_id"] = img_id
+            newdat["img_path"] = row["filepath"]
+            newdat["num_user"] = df_filtered.shape[0]
+            newdat["mean"] = np.nanmean(values)
+            newdat["median"] = np.nanmedian(values)
+            newdat["var"] = np.nanvar(values)
+            df_aggr = df_aggr.append(newdat,ignore_index=True)
     df_aggr["img_id"] = df_aggr["img_id"].astype(int)
     df_aggr["num_user"] = df_aggr["num_user"].astype(int)
     df_aggr["median"] = df_aggr["median"].astype(int)
@@ -84,9 +86,15 @@ def aggregate_data_part1(df,df_img):
 def save_df(df,outname):
     df.to_csv(outname,sep=",")
 
-create_dataset_input(data,input_loc,output_loc):
+def create_dataset_input(data,input_loc,output_loc):
     for idx, row in data.iterrows():
-        
+        cls = row["median"]
+        if cls == 1:
+            cls = 2
+        elif cls == 5:
+            cls = 4
+        fl = row["img_path"]
+        copy(input_loc+'/'+fl, output_loc+'/'+str(cls)+'/')
 
 
 
