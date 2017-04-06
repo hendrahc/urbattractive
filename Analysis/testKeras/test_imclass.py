@@ -37,7 +37,7 @@ data/
 '''
 
 import os
-os.chdir("Analysis/testKeras")
+#os.chdir("Analysis/testKeras")
 
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
@@ -58,15 +58,15 @@ batch_size = 8
 input_shape = (img_width, img_height,3)
 
 model = Sequential()
-model.add(Conv2D(32, 3, 3, input_shape=input_shape))
+model.add(Conv2D(32, (3, 3), input_shape=input_shape))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Conv2D(32, 3, 3))
+model.add(Conv2D(32, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Conv2D(64, 3, 3))
+model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
@@ -106,9 +106,9 @@ validation_generator = test_datagen.flow_from_directory(
 
 model.fit_generator(
     train_generator,
-    samples_per_epoch = 1,
-    nb_epoch = epochs,
+    steps_per_epoch=nb_train_samples // batch_size,
+    epochs=epochs,
     validation_data=validation_generator,
-    nb_val_samples = nb_validation_samples)
+    validation_steps=nb_validation_samples // batch_size)
 
 model.save_weights('first_try.h5')
