@@ -1,11 +1,14 @@
+'''
 import os
 os.chdir("Analysis")
-
+'''
 import pandas as pd
 import numpy as np
 from sklearn import linear_model
 import matplotlib.pyplot as plt
 from shutil import copy
+
+
 
 def normalize(df):
     # normalization
@@ -61,6 +64,9 @@ def corr_mat(dat):
     df_attrib_scores =  df[["attractiveness","familiarity","uniqueness","friendliness","pleasure","arousal","dominance"]]
     correl_mat = df_attrib_scores.corr()
     return correl_mat
+
+def save_corr_mat(cm,fname):
+    cm.to_csv(fname)
 
 def aggregate_data_part1(df,df_img):
     df_aggr = pd.DataFrame(columns=["img_id", "img_path", "num_user","mean","median","var"])
@@ -175,9 +181,11 @@ df_scores_aggr = df_scores.groupby(["loc_id"])[["loc_id","overall","img1","img2"
 input_filename = "CrowdData/pilot_judgements.csv"
 img_data_filename = "Data/images.csv"
 loc_im_filename = "Data/loc_im.csv"
+corr_mat_filename = "CrowdData/corr_mat.csv"
 aggr_part1_filename = "CrowdData/pilot_agregates_part1.csv"
 input_image_loc = '../Website/crowdsourcing/public/images'
 dataset_image_loc = 'InputImages/Training'
+
 
 
 #activities

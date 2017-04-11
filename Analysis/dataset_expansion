@@ -1,0 +1,35 @@
+import urllib
+import os
+import random
+
+width = 600
+height = 400
+size = str(width) + "x" + str(height)
+pitch = -0.76
+
+def generate_gsv_url(size,lat,long,heading,pitch):
+    location = str(lat) + "," + str(long)
+    url = "https://maps.googleapis.com/maps/api/streetview?size=" + size + "&location=" + location + "&heading=" + str(
+        heading) + "&pitch=" + str(pitch) + "&key=AIzaSyDeww92hY7OZDVGFyE7u5wHKXInVBmujHg"
+    #print(url)
+    return url
+
+
+def image_valid(lat, long):
+    heading = 0
+    url = generate_gsv_url(size,lat,long,heading,pitch)
+    urllib.request.urlretrieve(url, "test.jpg")
+    statinfo = os.stat("test.jpg")
+    if (statinfo.st_size < 7000):
+        return 0
+    return 1
+
+
+def download_image(lat, long, heading, filename):
+    url = generate_gsv_url(size,lat,long,heading,pitch)
+    urllib.request.urlretrieve(url, filename)
+
+def get_nearby_image(lat,long):
+
+
+def get_other_views(lat,long, init_heading, known_values):

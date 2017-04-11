@@ -6,7 +6,7 @@ import random
 
 n_image = 300
 start_counter = 401
-start_c = 401
+start_c = 9999
 
 width = 600
 height = 400
@@ -120,7 +120,7 @@ def start_crawling():
 
 def start_defined_crawling():
     logfile = open(log_loc, "a")
-    input_filename = "../../Dataset/manual_locs.txt"
+    input_filename = "../../Dataset/find_golden.txt"
     input_file = open(input_filename, "r")
     iter = start_c
     for line in input_file:
@@ -134,5 +134,5 @@ def start_defined_crawling():
     logfile.close()
     input_file.close()
 
-start_crawling()
-#start_defined_crawling()
+#start_crawling()
+start_defined_crawling()
