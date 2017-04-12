@@ -1,10 +1,13 @@
 '''
 import os
 os.chdir("Analysis")
+sys.path.append("")
 '''
 
+import os
 import numpy as np
 import warnings
+import pandas as pd
 
 from keras.models import Model
 from keras.layers import Flatten
@@ -96,11 +99,8 @@ def load_VGG_weight(model,weights_path):
                           'at ~/.keras/keras.json.')
     return model
 
-def predict_VGG(img_path):
-    img = image.load_img(img_path, target_size=(224, 224))
-    x = image.img_to_array(img)
-    x = np.expand_dims(x, axis=0)
-    x = preprocess_input(x)
+def predict_VGG(model,img_path):
+    x = read_img(img_path)
     preds = model.predict(x)
     return preds
 
@@ -120,17 +120,50 @@ def load_model(in_file,weight_file):
     print("model loaded")
 
     if (weight_file):
-        model.load_weights(weight_file)
+        loaded_model_json.load_weights(weight_file)
     print("weights loaded")
 
     return loaded_model_json
 
-def train_model(model):
+def read_img(img_file):
+    img = image.load_img(img_file, target_size=(224, 224))
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    x = preprocess_input(x)
+    return x
+
+def load_dataset(path,ref_file):
+    ref = pd.read_csv(ref_file)
+    X = []
+    Y = []
+    for index,row in ref.iterrows():
+        filename = row["img_path"]
+        x = read_img(path+filename)
+        cls = row["median"]
+        y = []
+        if cls==1:
+            y = [0, 0, 0, 0]
+        elif cls == 2:
+            y = [1, 0, 0, 0]
+        elif cls == 3:
+            y = [1, 1, 0, 0]
+        elif cls == 4:
+            y = [1, 1, 1, 0]
+        elif cls == 5:
+            y = [1, 1, 1, 1]
+        else:
+            continue
+        X.append(x)
+        Y.append(y)
+    return [X,Y]
+
+
+
+
+
+def train_model(model,X_train,Y_train,X_test,Y_test):
     # dimensions of our images.
     img_width, img_height = 224, 224
-
-    train_data_dir = 'InputImages/Training'
-    validation_data_dir = 'InputImages/Training'
     nb_train_samples = 565
     nb_validation_samples = 565
     epochs = 50
@@ -151,18 +184,6 @@ def train_model(model):
     # only rescaling
     test_datagen = ImageDataGenerator(rescale=1. / 255)
 
-    train_generator = train_datagen.flow_from_directory(
-        train_data_dir,
-        target_size=(img_width, img_height),
-        batch_size=batch_size,
-        class_mode='binary')
-
-    validation_generator = test_datagen.flow_from_directory(
-        validation_data_dir,
-        target_size=(img_width, img_height),
-        batch_size=batch_size,
-        class_mode='binary')
-
     model.fit_generator(
         train_generator,
         steps_per_epoch=nb_train_samples // batch_size,
@@ -180,23 +201,31 @@ def start_model():
 
     last = model.layers[-2].output
     x = Dense(4096, activation='relu', name='fc2new')(last)
-    x = Dense(1, activation='softmax', name='predictor')(x)
+    x = Dense(4, activation='softmax', name='predictor')(x)
     model = Model(model.input, x, name='newModel')
 
     plot_model(model, to_file='CNNModels/model.png')
 
     model_file = "CNNModels/model.json"
     weight_file = "CNNModels/weight.h5"
-    save_model(model_file,weight_file)
+    save_model(model,model_file,weight_file)
 
 
+'''
+WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
+model = create_basic_model()
+model = load_VGG_weight(model,WEIGHTS_PATH)
 
-
-img_path = '../../Dataset/PILOT/GSV_PILOT_329_4.jpg'
-preds = predict_VGG(img_path)
+img_path = 'InputImages/Training/2/GSV_PILOT_75_1.jpg'
+preds = predict_VGG(model,img_path)
 print('Predicted:', decode_predictions(preds))
 
+path="../Website/crowdsourcing/public/images/"
+ref="CrowdData/pilot_aggregates_part1.csv"
+[X,Y] = load_dataset(path,ref)
 
-start_model()
+'''
+
+#start_model()
 
 #train_model(model)

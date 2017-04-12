@@ -182,7 +182,7 @@ input_filename = "CrowdData/pilot_judgements.csv"
 img_data_filename = "Data/images.csv"
 loc_im_filename = "Data/loc_im.csv"
 corr_mat_filename = "CrowdData/corr_mat.csv"
-aggr_part1_filename = "CrowdData/pilot_agregates_part1.csv"
+aggr_part1_filename = "CrowdData/pilot_aggregates_part1.csv"
 input_image_loc = '../Website/crowdsourcing/public/images'
 dataset_image_loc = 'InputImages/Training'
 
