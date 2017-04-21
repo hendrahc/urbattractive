@@ -2,6 +2,7 @@
 import os
 os.chdir("Analysis")
 sys.path.append("")
+from image_classifier import *
 '''
 
 import os
@@ -128,14 +129,13 @@ def load_model(in_file,weight_file):
 def read_img(img_file):
     img = image.load_img(img_file, target_size=(224, 224))
     x = image.img_to_array(img)
-    x = np.expand_dims(x, axis=0)
-    x = preprocess_input(x)
     return x
 
 def load_dataset(path,ref_file):
     ref = pd.read_csv(ref_file)
     X = []
     Y = []
+    test = []
     for index,row in ref.iterrows():
         filename = row["img_path"]
         x = read_img(path+filename)
@@ -155,18 +155,35 @@ def load_dataset(path,ref_file):
             continue
         X.append(x)
         Y.append(y)
-    return [X,Y]
+    X = np.array(X)
+    Y = np.array(Y)
+
+    #split for training and validation
+    n = X.shape[0]
+    #forval = [i for i in range(1,n) if i%10==4]
+    forval = [i for i in range(0,56)]
+    fortrain = [i for i in range(0,n) if i not in forval]
+    X_train = X[fortrain]
+    Y_train = Y[fortrain]
+    X_val = X[forval]
+    Y_val = Y[forval]
+
+    return [X_train,Y_train,X_val,Y_val]
+
+def predict_attractiveness(model,img_path):
+    x = read_img(img_path)
+    preds = model.predict(x)
+    print(preds)
+    return preds
 
 
 
-
-
-def train_model(model,X_train,Y_train,X_test,Y_test):
+def train_model(model,X_train,Y_train,X_val,Y_val):
     # dimensions of our images.
     img_width, img_height = 224, 224
     nb_train_samples = 565
     nb_validation_samples = 565
-    epochs = 50
+    epochs = 20
     batch_size = 8
 
     model.compile(loss='binary_crossentropy',
@@ -184,11 +201,21 @@ def train_model(model,X_train,Y_train,X_test,Y_test):
     # only rescaling
     test_datagen = ImageDataGenerator(rescale=1. / 255)
 
+    train_generator = train_datagen.flow(
+        X_train, Y_train,
+        batch_size=batch_size
+    )
+
+    test_generator = test_datagen.flow(
+        X_val, Y_val,
+        batch_size=batch_size
+    )
+
     model.fit_generator(
         train_generator,
         steps_per_epoch=nb_train_samples // batch_size,
         epochs=epochs,
-        validation_data=validation_generator,
+        validation_data=test_generator,
         validation_steps=nb_validation_samples // batch_size)
     return model
 
@@ -204,12 +231,12 @@ def start_model():
     x = Dense(4, activation='softmax', name='predictor')(x)
     model = Model(model.input, x, name='newModel')
 
-    plot_model(model, to_file='CNNModels/model.png')
+    #plot_model(model, to_file='CNNModels/model.png')
 
-    model_file = "CNNModels/model.json"
-    weight_file = "CNNModels/weight.h5"
-    save_model(model,model_file,weight_file)
-
+    #model_file = "CNNModels/model.json"
+    #weight_file = "CNNModels/weight.h5"
+    #save_model(model,model_file,weight_file)
+    return model
 
 '''
 WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
@@ -222,10 +249,15 @@ print('Predicted:', decode_predictions(preds))
 
 path="../Website/crowdsourcing/public/images/"
 ref="CrowdData/pilot_aggregates_part1.csv"
-[X,Y] = load_dataset(path,ref)
+[X,Y,test] = load_dataset(path,ref)
 
 '''
 
-#start_model()
+path="../Website/crowdsourcing/public/images/"
+ref="CrowdData/pilot_aggregates_part1.csv"
+[X_train,Y_train,X_val,Y_val] = load_dataset(path,ref)
 
-#train_model(model)
+model = start_model()
+model = train_model(model,X_train,Y_train,X_val,Y_val)
+
+save_model(model,"CNNModels/trial2.json","CNNModels/trial2.h5")

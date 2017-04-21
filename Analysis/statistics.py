@@ -102,6 +102,10 @@ def create_dataset_input(data,input_loc,output_loc):
         fl = row["img_path"]
         copy(input_loc+'/'+fl, output_loc+'/'+str(cls)+'/')
 
+def df summarize_data(df_aggr,loc_im):
+    for keys in loc_im.items():
+        keys
+
 
 
 
@@ -196,3 +200,4 @@ df_aggr_part1 = aggregate_data_part1(df_part1,df_img)
 save_df(df_aggr_part1,aggr_part1_filename)
 
 create_dataset_input(df_aggr_part1,input_image_loc,dataset_image_loc)
+
