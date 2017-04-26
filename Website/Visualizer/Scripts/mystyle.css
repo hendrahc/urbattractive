@@ -10,8 +10,9 @@
 }
 
 #gallery-container{
-    background-color: blue;
     height: 100%;
+	border: black;
+	padding: 10px
 }
 
 #map {
@@ -25,6 +26,8 @@
 .img_thumb_gal{
     width: 22%;
 }
+
+
 
 /* Optional: Makes the sample page fill the window. */
 html, body {

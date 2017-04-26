@@ -5,6 +5,8 @@ from PIL import Image
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+import cv2
+import os.path
 
 width = 600
 height = 400
@@ -82,7 +84,10 @@ def expand_view(id,df_img,df_loc,loc_im):
         for h_d in [i*10 for i in range(0,9)]:
             head = (c_heading + h_d)%360
             fname = expand_view_dir+"EXPV_"+str(id)+"_"+str(head)+".jpg"
-            download_image(lat, long, head, fname)
+            if not(os.path.isfile(fname)):
+                download_image(lat, long, head, fname)
+            else:
+                print("File "+fname+" is already exists")
 
             #labeling
 
@@ -130,3 +135,6 @@ img_data_filename = "Data/images.csv"
 loc_im_filename = "Data/loc_im.csv"
 loc_data_filename = "Data/locations.csv"
 [df_img,df_loc,loc_im] = read_ref(img_data_filename,loc_data_filename,loc_im_filename)
+
+for lid in df_loc["loc_id"].values:
+    expand_view(lid, df_img, df_loc, loc_im)

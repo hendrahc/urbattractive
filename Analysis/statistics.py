@@ -4,7 +4,7 @@ os.chdir("Analysis")
 '''
 import pandas as pd
 import numpy as np
-from sklearn import linear_model
+#from sklearn import linear_model
 import matplotlib.pyplot as plt
 from shutil import copy
 
@@ -32,13 +32,14 @@ def read_data(inp):
     df_part2 = df_clean[df["part"]==2]
     return [df,df_part1,df_part2]
 
-def read_ref(img_data_f,loc_im_f):
+def read_ref(img_data_f,loc_im_f,loc_f):
     df_img = pd.read_csv(img_data_f)
     df_loc_im = pd.read_csv(loc_im_f)
     views_im = {}
     for index, row in df_loc_im.iterrows():
         views_im[row["loc_id"]] = {"img1": row["img1"], "img2": row["img2"], "img3": row["img3"], "img4": row["img4"]}
-    return [df_img,views_im]
+    df_loc = pd.read_csv(loc_f)
+    return [df_img,views_im,df_loc]
 
 
 def generate_loc_im(in_file,out_file):
@@ -69,7 +70,7 @@ def save_corr_mat(cm,fname):
     cm.to_csv(fname)
 
 def aggregate_data_part1(df,df_img):
-    df_aggr = pd.DataFrame(columns=["img_id", "img_path", "num_user","mean","median","var"])
+    df_aggr = pd.DataFrame(columns=["img_id", "img_path", "num_user","mean","median","var","vote1","vote2","vote3","vote4","vote5"])
     for idx,row in df_img.iterrows():
         img_id = int(row["id"])
         df_filtered = df[df["img_id"]==img_id]
@@ -83,10 +84,46 @@ def aggregate_data_part1(df,df_img):
             newdat["mean"] = np.nanmean(values)
             newdat["median"] = np.nanmedian(values)
             newdat["var"] = np.nanvar(values)
+
+            #count votes
+            for val in range(1,6):
+                vote = df_filtered[df_filtered["attractiveness"]==val].shape[0]
+                newdat["vote"+str(val)] = vote
+
             df_aggr = df_aggr.append(newdat,ignore_index=True)
     df_aggr["img_id"] = df_aggr["img_id"].astype(int)
     df_aggr["num_user"] = df_aggr["num_user"].astype(int)
     df_aggr["median"] = df_aggr["median"].astype(int)
+    for val in range(1, 6):
+        df_aggr["vote"+str(val)] = df_aggr["vote"+str(val)].astype(int)
+    return df_aggr
+
+
+def aggregate_data_part2(df):
+    df_aggr = pd.DataFrame(columns=["loc_id", "num_user","mean","median","var","vote1","vote2","vote3","vote4","vote5"])
+    for loc_id in df_part2["loc_id"].unique():
+        df_filtered = df[df["loc_id"]==loc_id]
+        values = df_filtered["attractiveness"].values
+
+        if(df_filtered.shape[0]>0):
+            newdat = {}
+            newdat["loc_id"] = loc_id
+            newdat["num_user"] = df_filtered.shape[0]
+            newdat["mean"] = np.nanmean(values)
+            newdat["median"] = np.nanmedian(values)
+            newdat["var"] = np.nanvar(values)
+
+            # count votes
+            for val in range(1, 6):
+                vote = df_filtered[df_filtered["attractiveness"] == val].shape[0]
+                newdat["vote" + str(val)] = vote
+
+            df_aggr = df_aggr.append(newdat,ignore_index=True)
+    df_aggr["loc_id"] = df_aggr["loc_id"].astype(int)
+    df_aggr["num_user"] = df_aggr["num_user"].astype(int)
+    df_aggr["median"] = df_aggr["median"].astype(int)
+    for val in range(1, 6):
+        df_aggr["vote" + str(val)] = df_aggr["vote" + str(val)].astype(int)
     return df_aggr
 
 def save_df(df,outname):
@@ -102,9 +139,9 @@ def create_dataset_input(data,input_loc,output_loc):
         fl = row["img_path"]
         copy(input_loc+'/'+fl, output_loc+'/'+str(cls)+'/')
 
-def df summarize_data(df_aggr,loc_im):
-    for keys in loc_im.items():
-        keys
+#def df summarize_data(df_aggr,loc_im):
+    #for keys in loc_im.items():
+        #keys
 
 
 
@@ -185,8 +222,10 @@ df_scores_aggr = df_scores.groupby(["loc_id"])[["loc_id","overall","img1","img2"
 input_filename = "CrowdData/pilot_judgements.csv"
 img_data_filename = "Data/images.csv"
 loc_im_filename = "Data/loc_im.csv"
+loc_filename = "Data/locations.csv"
 corr_mat_filename = "CrowdData/corr_mat.csv"
 aggr_part1_filename = "CrowdData/pilot_aggregates_part1.csv"
+aggr_part2_filename = "CrowdData/pilot_aggregates_part2.csv"
 input_image_loc = '../Website/crowdsourcing/public/images'
 dataset_image_loc = 'InputImages/Training'
 
@@ -194,10 +233,13 @@ dataset_image_loc = 'InputImages/Training'
 
 #activities
 [df,df_part1,df_part2] = read_data(input_filename)
-[df_img,loc_im] = read_ref(img_data_filename,loc_im_filename)
+[df_img,loc_im,df_loc] = read_ref(img_data_filename,loc_im_filename,loc_filename)
 
 df_aggr_part1 = aggregate_data_part1(df_part1,df_img)
 save_df(df_aggr_part1,aggr_part1_filename)
+
+df_aggr_part2 = aggregate_data_part2(df_part2)
+save_df(df_aggr_part2,aggr_part2_filename)
 
 create_dataset_input(df_aggr_part1,input_image_loc,dataset_image_loc)
 
