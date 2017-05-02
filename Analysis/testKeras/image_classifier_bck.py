@@ -20,10 +20,8 @@ from keras.layers import Conv2D
 from keras.layers import MaxPooling2D
 from keras.layers import GlobalMaxPooling2D
 from keras.layers import GlobalAveragePooling2D
-
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
-
 from keras.utils import layer_utils
 from keras.utils.data_utils import get_file
 from keras import backend as K
@@ -41,38 +39,38 @@ def create_basic_model():
     img_input = Input(shape=input_shape)
 
     # Block 1
-    x = Conv2D(64, (3, 3), activation='relu', padding='same', name='conv1_1', trainable=False)(img_input)
-    x = Conv2D(64, (3, 3), activation='relu', padding='same', name='conv1_2', trainable=False)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool1')(x)
+    x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1', trainable=False)(img_input)
+    x = Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2', trainable=False)(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
 
     # Block 2
-    x = Conv2D(128, (3, 3), activation='relu', padding='same', name='conv2_1', trainable=False)(x)
-    x = Conv2D(128, (3, 3), activation='relu', padding='same', name='conv2_2', trainable=False)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool2')(x)
+    x = Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1', trainable=False)(x)
+    x = Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2', trainable=False)(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
 
     # Block 3
-    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3_1', trainable=False)(x)
-    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3_2', trainable=False)(x)
-    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='conv3_3', trainable=False)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool3')(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1', trainable=False)(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2', trainable=False)(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv3', trainable=False)(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
 
     # Block 4
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4_1', trainable=False)(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4_2', trainable=False)(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv4_3', trainable=False)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool4')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1', trainable=False)(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2', trainable=False)(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv3', trainable=False)(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
 
     # Block 5
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_1', trainable=False)(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_2', trainable=False)(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_3', trainable=False)(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1', trainable=False)(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2', trainable=False)(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv3', trainable=False)(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
 
     # Classification block
     x = Flatten(name='flatten')(x)
-    x = Dense(4096, activation='relu', name='fc6', trainable=False)(x)
-    x = Dense(4096, activation='relu', name='fc7')(x)
-    x = Dense(205, activation='softmax', name='fc8')(x)
+    x = Dense(4096, activation='relu', name='fc1', trainable=False)(x)
+    x = Dense(4096, activation='relu', name='fc2')(x)
+    x = Dense(1000, activation='softmax', name='predictions')(x)
 
     inputs = img_input
 
@@ -103,10 +101,6 @@ def load_VGG_weight(model,weights_path):
                           '`image_data_format="channels_last"` in '
                           'your Keras config '
                           'at ~/.keras/keras.json.')
-    return model
-
-def load_PLACES_weight(model,weights_path):
-    model.load_weights(weights_path)
     return model
 
 def predict_VGG(model,img_path):
@@ -241,10 +235,9 @@ def train_model(model,X_train,Y_train,X_val,Y_val):
     return model
 
 def start_model():
-    #WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
-    #WEIGHTS_PATH_NO_TOP = '../../CNN/PredefinedModels/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
+    WEIGHTS_PATH_NO_TOP = '../../CNN/PredefinedModels/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
-    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places.h5'
     model = create_basic_model()
     model = load_VGG_weight(model,WEIGHTS_PATH)
 
@@ -260,8 +253,8 @@ def start_model():
     #save_model(model,model_file,weight_file)
     return model
 
-def testModel(model,X_val,Y_val):
-    preds = model.predict(X_val,batch_size=1)
+def testModel(model,X_test,Y_test):
+    preds = model.predict(X_test,batch_size=1)
     preds = preds.astype(int)
     n = preds.shape[0]
     correct = 0
@@ -272,9 +265,9 @@ def testModel(model,X_val,Y_val):
 
 
 def run_training(name):
-    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places.h5'
+    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
     model = create_basic_model()
-    model = load_PLACES_weight(model,WEIGHTS_PATH)
+    model = load_VGG_weight(model,WEIGHTS_PATH)
 
     path="../Website/crowdsourcing/public/images/"
     ref="CrowdData/pilot_aggregates_part1.csv"
@@ -284,11 +277,6 @@ def run_training(name):
     model = train_model(model,X_train,Y_train,X_val,Y_val)
 
     save_model(model,"CNNModels/"+name,"CNNModels/"+name)
-
-def test_prediction():
-    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places.h5'
-    model = create_basic_model()
-    model = load_PLACES_weight(model, WEIGHTS_PATH)
 
 '''
 img_path = '../Website/crowdsourcing/public/images/PILOT/GSV_PILOT_93_2.jpg'
@@ -300,3 +288,4 @@ preds = mymodel.predict(X_val,batch_size=1)
 '''
 
 #run_training("trial1")
+

@@ -139,14 +139,56 @@ def create_dataset_input(data,input_loc,output_loc):
         fl = row["img_path"]
         copy(input_loc+'/'+fl, output_loc+'/'+str(cls)+'/')
 
-#def df summarize_data(df_aggr,loc_im):
-    #for keys in loc_im.items():
-        #keys
+def summarize_data(df_aggr_part1, df_aggr_part2, loc_im):
+    df_summary = pd.DataFrame(
+        columns=["loc_id", "var1", "var2", "var3", "var4", "var_loc", "lab1", "lab2", "lab3", "lab4", "lab_loc"])
+    for idx, row in df_aggr_part2.iterrows():
+        newdat = {}
+        loc_id = row["loc_id"]
+        newdat["loc_id"] = loc_id
+        filt_loc = df_aggr_part2[df_aggr_part2["loc_id"]==loc_id]
+        newdat["var_loc"] = filt_loc["var"].values[0]
+        newdat["lab_loc"] = filt_loc["median"].values[0]
+        for i in range(1,5):
+            img_id = loc_im[loc_id]["img"+str(i)]
+            filt = df_aggr_part1[df_aggr_part1["img_id"]==img_id]
+            newdat["var"+str(i)] = filt["var"].values[0]
+            newdat["lab" + str(i)] = filt["median"].values[0]
+        df_summary = df_summary.append(newdat, ignore_index=True)
+    df_summary["loc_id"] = df_summary["loc_id"].astype(int)
+    df_summary["lab_loc"] = df_summary["lab_loc"].astype(int)
+    for i in range(1, 5):
+        df_summary["lab"+str(i)] = df_summary["lab"+str(i)].astype(int)
+    return df_summary
+
+
+def label_tuning(df_summary):
+    df_out = df_summary
+
+        for idx, row in df_summary.iterrows():
+
+            # tuning image labels
+            for i in range(1, 5):
+                if (row["var" + str(i)] > 1):
+                    lab_left =
+                    lab_right =
+
+            #tuning overall attractiveness
+            var_loc = row["var_loc"]
+            lab_loc = row["lab_loc"]
+            if(var_loc > 1):
+                avg_lab = (row["lab1"]+row["lab2"]+row["lab3"]+row["lab4"])/4
+                if(abs(lab_loc-avg_lab) >= 1):
+                    if lab_loc > avg_lab:
+                        df_out[idx]["lab_loc"] = lab_loc - 1
+                    else:
+                        df_out[idx]["lab_loc"] = lab_loc + 1
 
 
 
 
 
+'''
 #attractiveness function
 df_scores = pd.DataFrame(columns=["user_id","loc_id","overall","img1","img2","img3","img4"])
 
@@ -210,7 +252,7 @@ df_aggr_part2 = df_part2.groupby(["img_id"])[["attractiveness","familiarity","un
 
 
 df_scores_aggr = df_scores.groupby(["loc_id"])[["loc_id","overall","img1","img2","img3","img4"]].mean()
-
+'''
 
 
 
@@ -228,7 +270,7 @@ aggr_part1_filename = "CrowdData/pilot_aggregates_part1.csv"
 aggr_part2_filename = "CrowdData/pilot_aggregates_part2.csv"
 input_image_loc = '../Website/crowdsourcing/public/images'
 dataset_image_loc = 'InputImages/Training'
-
+summary_filename = "CrowdData/summary_ori.csv"
 
 
 #activities
@@ -243,3 +285,10 @@ save_df(df_aggr_part2,aggr_part2_filename)
 
 create_dataset_input(df_aggr_part1,input_image_loc,dataset_image_loc)
 
+
+
+df_aggr_part1 = pd.read_csv(aggr_part1_filename)
+df_aggr_part2 = pd.read_csv(aggr_part2_filename)
+
+df_summary = summarize_data(df_aggr_part1, df_aggr_part2, loc_im)
+save_df(df_summary,summary_filename)
