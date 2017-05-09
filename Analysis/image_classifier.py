@@ -12,14 +12,16 @@ import numpy as np
 import warnings
 import pandas as pd
 
-from keras.models import Model
-from keras.layers import Flatten
+from keras.models import Model, Sequential
+from keras.layers import Flatten, Dropout
 from keras.layers import Dense
 from keras.layers import Input
 from keras.layers import Conv2D
 from keras.layers import MaxPooling2D
 from keras.layers import GlobalMaxPooling2D
 from keras.layers import GlobalAveragePooling2D
+
+from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
 
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
@@ -34,10 +36,11 @@ from keras.engine.topology import get_source_inputs
 from keras.models import model_from_json
 
 from keras.utils import plot_model
+import h5py
 
 
 def create_basic_model():
-    input_shape = (224,224,3)
+    input_shape = (3,224,224)
     img_input = Input(shape=input_shape)
 
     # Block 1
@@ -80,6 +83,54 @@ def create_basic_model():
     model = Model(inputs, x, name='vgg16')
     return model
 
+def create_basic_model2():
+    input_shape = (3,224, 224)
+    model = Sequential()
+
+    model.add(ZeroPadding2D((1, 1), input_shape=input_shape))
+    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_2'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_3'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_2'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_3'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_2'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(Flatten(name="flatten"))
+    model.add(Dense(4096, activation='relu', name='fc6'))
+    model.add(Dropout(0.5))
+    model.add(Dense(4096, activation='relu', name='fc7'))
+    model.add(Dropout(0.5))
+    model.add(Dense(205, name='fc8'))
+
+    return model
 
 
 def load_VGG_weight(model,weights_path):
@@ -271,8 +322,52 @@ def testModel(model,X_val,Y_val):
     return correct/n
 
 
+def convert_weight(h5_file = '../../CNN/PredefinedModels/vgg_places.h5',out_file = '../../CNN/PredefinedModels/vgg_places_keras.h5'):
+    res = h5py.File(out_file,'r+')
+    f = h5py.File(h5_file,'r')
+    ff = f[u'data'].values()
+    at = np.array(f.keys()).astype("|S12")
+    for dat in ff:
+        for dts in dat.values():
+            nm = dts.name.split("/")[2]
+            idx = dts.name.split("/")[3]
+            dtsname = "/" + nm + "/" + nm+"/"
+            if(idx=="0"):
+                dtsname = dtsname +"kernel:0"
+            elif(idx=="1"):
+                dtsname = dtsname +"bias:0"
+            print (dts.name+" => "+dtsname)
+            del res[dtsname]
+            res[dtsname] = dts.value.transpose()
+    res.close()
+    return res
+
+def get_places_ref(ref_path = '../../CNN/PredefinedModels/categoryIndex_places205.csv'):
+    df_cat = pd.read_csv(ref_path,delimiter=" ")
+    res = {}
+    for idx,row in df_cat.iterrows():
+        ctg = row["category"].split("/")[2]
+        res[str(row["id"])] = ctg
+    return res
+
+def decode_scene(preds,reff):
+    sorted = np.flip(preds.argsort(),0)
+    for i in range(0,5):
+        ct = sorted[i]
+        print("["+str(preds[ct])+"] "+reff[str(ct)])
+
+
+def classify_scene(model,reff,img_path):
+    img = image.load_img(img_path, target_size=(224, 224))
+    x = image.img_to_array(img)
+    x[0],x[1],x[2] = x[2].transpose()-105.487823486,x[1].transpose()-113.741088867,x[0].transpose()-116.060394287
+    x = np.expand_dims(x, axis=0)
+    preds = model.predict(x)[0]
+    decode_scene(preds,reff)
+    return preds
+
 def run_training(name):
-    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places.h5'
+    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
     model = create_basic_model()
     model = load_PLACES_weight(model,WEIGHTS_PATH)
 
@@ -286,9 +381,13 @@ def run_training(name):
     save_model(model,"CNNModels/"+name,"CNNModels/"+name)
 
 def test_prediction():
-    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places.h5'
-    model = create_basic_model()
+    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
+    model = create_basic_model2()
     model = load_PLACES_weight(model, WEIGHTS_PATH)
+
+    img_path = '../Website/crowdsourcing/public/images/PILOT/GSV_PILOT_2_2.jpg'
+    reff = get_places_ref()
+    tes = classify_scene(model,reff,img_path)
 
 '''
 img_path = '../Website/crowdsourcing/public/images/PILOT/GSV_PILOT_93_2.jpg'
@@ -300,3 +399,5 @@ preds = mymodel.predict(X_val,batch_size=1)
 '''
 
 #run_training("trial1")
+#test_prediction()
+

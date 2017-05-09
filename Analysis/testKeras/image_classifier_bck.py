@@ -32,6 +32,7 @@ from keras.engine.topology import get_source_inputs
 from keras.models import model_from_json
 
 from keras.utils import plot_model
+import h5py
 
 
 def create_basic_model():
@@ -262,6 +263,7 @@ def testModel(model,X_test,Y_test):
         if(np.array_equal(preds[i],Y_val[i])):
             correct = correct+1
     return correct/n
+
 
 
 def run_training(name):
