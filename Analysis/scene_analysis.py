@@ -48,3 +48,6 @@ for idx,row in df_aggr_part1.iterrows():
             counter[key] = counter[key] + 1
         else:
             counter[key] = 1
+
+for k in counter.keys():
+    print(k+">"+str(counter[k]))

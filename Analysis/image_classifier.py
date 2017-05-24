@@ -40,7 +40,8 @@ from keras.models import model_from_json
 
 from keras.utils import plot_model
 import h5py
-
+import datetime
+from PIL import Image
 
 def create_basic_model():
     input_shape = (3,224,224)
@@ -76,7 +77,7 @@ def create_basic_model():
 
     # Classification block
     x = Flatten(name='flatten')(x)
-    x = Dense(4096, activation='relu', name='fc6', trainable=False)(x)
+    x = Dense(4096, activation='relu', name='fc6', trainable=True)(x)
     x = Dense(4096, activation='relu', name='fc7', trainable=True)(x)
     x = Dense(205, activation='softmax', name='fc8')(x)
 
@@ -91,14 +92,14 @@ def load_PLACES_weight(model,weights_path):
     return model
 
 def preprocess_image(x):
-    x[0], x[1], x[2] = x[2].transpose() - 105.487823486, x[1].transpose() - 113.741088867, x[0].transpose() - 116.060394287
+    x[0], x[1], x[2] = x[2].transpose() - 105, x[1].transpose() - 114, x[0].transpose() - 116
     return x
 
 def preprocess_dataset(dat):
     n = dat.shape[0]
     for i in range(0,n):
         x = dat[i]
-        x[0], x[1], x[2] = x[2].transpose() - 105.487823486, x[1].transpose() - 113.741088867, x[0].transpose() - 116.060394287
+        x[0], x[1], x[2] = x[2].transpose() - 105, x[1].transpose() - 114, x[0].transpose() - 116
         dat[i] = x
     return dat
 
@@ -130,14 +131,15 @@ def read_img(img_file):
     x = image.img_to_array(img)
     return x
 
-def load_dataset(path,ref_file):
+def load_dataset(path,ref_file,width):
     ref = pd.read_csv(ref_file)
     X = []
     Y = []
     test = []
     for index,row in ref.iterrows():
-        filename = row["img_path"]
-        x = read_img(path+filename)
+        filename = path + row["img_path"]
+        img = image.load_img(filename, target_size=(width, width))
+        x = image.img_to_array(img)
         cls = row["median"]
         y = []
 
@@ -184,28 +186,28 @@ def predict_attractiveness(model,img_path):
 
 
 def class_accuracy(y_true,y_pred):
-    return np.array_equal(y_true,y_pred)
+    return K.mean(K.equal(K.sum(K.abs(K.round(y_pred) - y_true),axis=-1),0))
 
 
-def train_model(model,X_train,Y_train,X_val,Y_val):
+def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[]):
     # dimensions of our images.
     img_width, img_height = 224, 224
     nb_train_samples = X_train.shape[0]
     nb_validation_samples = X_val.shape[0]
-    epochs = 100
-    batch_size = 1
+    epochs = 20
+    batch_size = 5
 
-    optim = keras.optimizers.SGD(lr=10, momentum=0.0, decay=0.8, nesterov=False);
+    optim = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.000001, nesterov=True);
 
     model.compile(loss='binary_crossentropy',
                   optimizer=optim,
-                  metrics=['accuracy',metrics.categorical_accuracy])
+                  metrics=[class_accuracy])
 
     # this is the augmentation configuration we will use for training
-    train_datagen = ImageDataGenerator(
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True)
+    train_datagen = ImageDataGenerator()
+        #shear_range=0.2,
+        #zoom_range=0.2,
+        #horizontal_flip=True)
 
     # this is the augmentation configuration we will use for testing:
     # only rescaling
@@ -226,7 +228,8 @@ def train_model(model,X_train,Y_train,X_val,Y_val):
         steps_per_epoch=nb_train_samples // batch_size,
         epochs=epochs,
         validation_data=test_generator,
-        validation_steps=nb_validation_samples // batch_size)
+        validation_steps=nb_validation_samples // batch_size,
+        callbacks_list = callbacks_list)
     return model
 
 def start_model():
@@ -330,11 +333,47 @@ def predict_scenes():
     df_scene.to_csv("Data/SceneFeatures.csv")
 
 
+def crop_im224(Xbig,xx,yy):
+    img = image.fromarray(Xbig, 'RGB')
+    cropped = img.crop((xx,yy,xx+224,yy+224))
+    return image.img_to_array(cropped)
 
-def experiment():
+def get_crops(X,Y):
+    X_crop = []
+    Y_crop = []
+    n = Y.shape[0]
+
+    for i in range(0,n):
+        #crop_center
+        X_crop.append(crop_im224(X[i],88,88))
+        Y_crop.append(Y[i])
+
+        # crop1
+        X_crop.append(crop_im224(X[i], 0, 0))
+        Y_crop.append(Y[i])
+
+        # crop2
+        X_crop.append(crop_im224(X[i], 0, 176))
+        Y_crop.append(Y[i])
+
+        # crop3
+        X_crop.append(crop_im224(X[i], 176, 0))
+        Y_crop.append(Y[i])
+
+        # crop4
+        X_crop.append(crop_im224(X[i], 176, 176))
+        Y_crop.append(Y[i])
+
+    X_crop = np.array(X_crop)
+    Y_crop = np.array(Y_crop)
+    return [X_crop, Y_crop]
+
+
+
+def experiment(name):
     path = "../Website/crowdsourcing/public/images/"
     ref = "CrowdData/pilot_aggregates_part1.csv"
-    [X,Y] = load_dataset(path, ref)
+    [X,Y] = load_dataset(path, ref,224)
     X = preprocess_dataset(X)
 
     # split for training and validation
@@ -351,7 +390,12 @@ def experiment():
         Y_val = Y[forval]
 
         model = start_model()
+        print('Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
+        print("Training Fold "+str(fold))
         model = train_model(model, X_train, Y_train, X_val, Y_val)
+        print("Training Fold " + str(fold)+" done..")
+        save_model(model, "../../CNN/Models/" + name + ".json", "../../CNN/Models/" + name + "_"+str(fold+1)+".h5")
+
 
 def convert_to_binary(pred):
     res = np.zeros(pred.shape).astype(int)
@@ -359,23 +403,25 @@ def convert_to_binary(pred):
     return res
 
 def binarize_result(preds):
+    p = np.zeros(preds.shape).astype(int)
     for i in range(0,preds.shape[0]):
-        preds[i] = convert_to_binary(preds[i])
-    return preds
+        p[i] = convert_to_binary(preds[i])
+    return p
 
 
 def run_training(name):
     path="../Website/crowdsourcing/public/images/"
     ref="CrowdData/pilot_aggregates_part1.csv"
-    [X,Y] = load_dataset(path,ref)
+    #[X, Y] = load_dataset(path, ref, 224)
+    [X,Y] = load_dataset(path,ref,400)
+    [X, Y] = get_crops(X,Y)
 
     n = X.shape[0]
-    n_fold = 5
-    fold_size = int(n / n_fold -1)
 
     X = preprocess_dataset(X)
-    fold = 0
-    forval = [i for i in range(fold * fold_size, (fold + 1) * fold_size)]
+    val_ids = pd.read_csv("Data/val_img.csv")
+
+    forval = val_ids["img_id"].values.tolist()
     fortrain = [i for i in range(0, n) if i not in forval]
     X_train = X[fortrain]
     Y_train = Y[fortrain]
@@ -383,6 +429,13 @@ def run_training(name):
     Y_val = Y[forval]
 
     model = start_model()
+
+    checkpath = "../../CNN/Models/Checkpoints/checks_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
+    checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
+                                    save_weights_only=True, mode='auto', period=10)
+
+    callbacks_list = [checkp]
+
     model = train_model(model, X_train, Y_train, X_val, Y_val)
 
     save_model(model,"../../CNN/Models/"+name+".json","../../CNN/Models/"+name+".h5")
@@ -428,12 +481,12 @@ def tes_training_work():
     model = start_model()
     model = train_model(model, X_train, Y_train, X_train, Y_train)
 
-    save_model(model, "../../CNN/Models/overfit.json", "../../CNN/Models/overfit.h5")
+    save_model(model, "../../CNN/Models/overfit2.json", "../../CNN/Models/overfit2.h5")
 
-#run_training("trial_naif")
+#run_training("basic1")
 #tes_training_work()
 
 #[model,X,Y,X_tes,Y_tes,preds] = tesTrial()
 #test_prediction()
-predict_scenes()
-
+#predict_scenes()
+#experiment("basic_ori")
