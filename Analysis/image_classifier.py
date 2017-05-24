@@ -229,7 +229,7 @@ def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[]):
         epochs=epochs,
         validation_data=test_generator,
         validation_steps=nb_validation_samples // batch_size,
-        callbacks_list = callbacks_list)
+        callbacks = callbacks_list)
     return model
 
 def start_model():
@@ -237,7 +237,7 @@ def start_model():
     model = create_basic_model()
     model = load_PLACES_weight(model, WEIGHTS_PATH)
 
-    last = model.layers[-1].output
+    last = model.layers[-2].output
     #x = Dense(4096, activation='relu', name='fc7new', trainable=True)(last)
     x = Dense(4, activation='sigmoid', name='predictor', trainable=True)(last)
     model = Model(model.input, x, name='newModel')
@@ -414,7 +414,6 @@ def run_training(name):
     ref="CrowdData/pilot_aggregates_part1.csv"
     #[X, Y] = load_dataset(path, ref, 224)
     [X,Y] = load_dataset(path,ref,400)
-    [X, Y] = get_crops(X,Y)
 
     n = X.shape[0]
 
@@ -428,7 +427,11 @@ def run_training(name):
     X_val = X[forval]
     Y_val = Y[forval]
 
+    [X_train, Y_train] = get_crops(X_train, Y_train)
+    [X_val, Y_val] = get_crops(X_val, Y_val)
+
     model = start_model()
+    model = model.load_weights("??")
 
     checkpath = "../../CNN/Models/Checkpoints/checks_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
     checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
@@ -457,7 +460,7 @@ def tesTrial():
 
     path="../Website/crowdsourcing/public/images/"
     ref="CrowdData/pilot_aggregates_part1.csv"
-    [X,Y] = load_dataset(path,ref)
+    [X,Y] = load_dataset(path,ref,224)
     X = preprocess_dataset(X)
     X_tes = X[0:10]
     Y_tes = Y[0:10]
