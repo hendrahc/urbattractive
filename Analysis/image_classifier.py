@@ -77,7 +77,7 @@ def create_basic_model():
 
     # Classification block
     x = Flatten(name='flatten')(x)
-    x = Dense(4096, activation='relu', name='fc6', trainable=True)(x)
+    x = Dense(4096, activation='relu', name='fc6', trainable=False)(x)
     x = Dense(4096, activation='relu', name='fc7', trainable=True)(x)
     x = Dense(205, activation='softmax', name='fc8')(x)
 
@@ -154,7 +154,7 @@ def load_dataset(path,ref_file,width):
         elif cls == 5:
             y = [1, 1, 1, 1]
         else:
-            y = [0, 0, 0, 0]
+            y = [1, 1, 0, 0]
 
         '''
         if cls == 1:
@@ -410,30 +410,31 @@ def binarize_result(preds):
 
 
 def run_training(name):
-    path="../Website/crowdsourcing/public/images/"
-    ref="CrowdData/pilot_aggregates_part1.csv"
+path="../Website/crowdsourcing/public/images/"
+ref="CrowdData/pilot_aggregates_part1.csv"
     #[X, Y] = load_dataset(path, ref, 224)
     [X,Y] = load_dataset(path,ref,400)
 
+    # split for training and validation
     n = X.shape[0]
+    n_fold = 5
+    fold_size = int(n/n_fold)
 
-    X = preprocess_dataset(X)
-    val_ids = pd.read_csv("Data/val_img.csv")
-
-    forval = val_ids["img_id"].values.tolist()
-    fortrain = [i for i in range(0, n) if i not in forval]
-    X_train = X[fortrain]
-    Y_train = Y[fortrain]
-    X_val = X[forval]
-    Y_val = Y[forval]
+    for fold in range(0,n_fold):
+        forval = [i for i in range(fold*fold_size, (fold+1)*fold_size)]
+        fortrain = [i for i in range(0, n) if i not in forval]
+        X_train = X[fortrain]
+        Y_train = Y[fortrain]
+        X_val = X[forval]
+        Y_val = Y[forval]
 
     [X_train, Y_train] = get_crops(X_train, Y_train)
     [X_val, Y_val] = get_crops(X_val, Y_val)
 
     model = start_model()
-    model = model.load_weights("??")
+    model.load_weights("??")
 
-    checkpath = "../../CNN/Models/Checkpoints/checks_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
+    checkpath = "checks_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
     checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
                                     save_weights_only=True, mode='auto', period=10)
 
