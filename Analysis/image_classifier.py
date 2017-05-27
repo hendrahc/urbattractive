@@ -420,16 +420,16 @@ def run_training(name):
     n_fold = 5
     fold_size = int(n/n_fold)
 	
-	X = preprocess_dataset(X)
+    X = preprocess_dataset(X)
 	
-	fold = 0
+    fold = 0
 	
-	forval = [i for i in range(fold*fold_size, (fold+1)*fold_size)]
-	fortrain = [i for i in range(0, n) if i not in forval]
-	X_train = X[fortrain]
-	Y_train = Y[fortrain]
-	X_val = X[forval]
-	Y_val = Y[forval]
+    forval = [i for i in range(fold*fold_size, (fold+1)*fold_size)]
+    fortrain = [i for i in range(0, n) if i not in forval]
+    X_train = X[fortrain]
+    Y_train = Y[fortrain]
+    X_val = X[forval]
+    Y_val = Y[forval]
 
     [X_train, Y_train] = get_crops(X_train, Y_train)
     [X_val, Y_val] = get_crops(X_val, Y_val)
