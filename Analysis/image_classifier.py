@@ -410,8 +410,8 @@ def binarize_result(preds):
 
 
 def run_training(name):
-	path="../Website/crowdsourcing/public/images/"
-	ref="CrowdData/pilot_aggregates_part1.csv"
+    path="../Website/crowdsourcing/public/images/"
+    ref="CrowdData/pilot_aggregates_part1.csv"
     #[X, Y] = load_dataset(path, ref, 224)
     [X,Y] = load_dataset(path,ref,400)
 
