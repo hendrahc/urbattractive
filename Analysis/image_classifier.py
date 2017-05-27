@@ -334,7 +334,7 @@ def predict_scenes():
 
 
 def crop_im224(Xbig,xx,yy):
-    img = image.fromarray(Xbig, 'RGB')
+    img = image.array_to_img(Xbig)
     cropped = img.crop((xx,yy,xx+224,yy+224))
     return image.img_to_array(cropped)
 
@@ -410,8 +410,8 @@ def binarize_result(preds):
 
 
 def run_training(name):
-path="../Website/crowdsourcing/public/images/"
-ref="CrowdData/pilot_aggregates_part1.csv"
+	path="../Website/crowdsourcing/public/images/"
+	ref="CrowdData/pilot_aggregates_part1.csv"
     #[X, Y] = load_dataset(path, ref, 224)
     [X,Y] = load_dataset(path,ref,400)
 
@@ -419,14 +419,17 @@ ref="CrowdData/pilot_aggregates_part1.csv"
     n = X.shape[0]
     n_fold = 5
     fold_size = int(n/n_fold)
-
-    for fold in range(0,n_fold):
-        forval = [i for i in range(fold*fold_size, (fold+1)*fold_size)]
-        fortrain = [i for i in range(0, n) if i not in forval]
-        X_train = X[fortrain]
-        Y_train = Y[fortrain]
-        X_val = X[forval]
-        Y_val = Y[forval]
+	
+	X = preprocess_dataset(X)
+	
+	fold = 0
+	
+	forval = [i for i in range(fold*fold_size, (fold+1)*fold_size)]
+	fortrain = [i for i in range(0, n) if i not in forval]
+	X_train = X[fortrain]
+	Y_train = Y[fortrain]
+	X_val = X[forval]
+	Y_val = Y[forval]
 
     [X_train, Y_train] = get_crops(X_train, Y_train)
     [X_val, Y_val] = get_crops(X_val, Y_val)
@@ -436,7 +439,7 @@ ref="CrowdData/pilot_aggregates_part1.csv"
 
     checkpath = "checks_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
     checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
-                                    save_weights_only=True, mode='auto', period=10)
+                                    save_weights_only=True, mode='auto', period=5)
 
     callbacks_list = [checkp]
 
