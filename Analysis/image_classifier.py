@@ -43,6 +43,9 @@ import h5py
 import datetime
 from PIL import Image
 
+from sklearn.model_selection import GridSearchCV
+from keras.wrappers.scikit_learn import KerasClassifier
+
 def create_basic_model():
     input_shape = (3,224,224)
     img_input = Input(shape=input_shape)
@@ -204,10 +207,10 @@ def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[]):
                   metrics=[class_accuracy])
 
     # this is the augmentation configuration we will use for training
-    train_datagen = ImageDataGenerator()
-        #shear_range=0.2,
-        #zoom_range=0.2,
-        #horizontal_flip=True)
+    train_datagen = ImageDataGenerator(
+        shear_range=0.2,
+        channel_shift_range = 0.2,
+        horizontal_flip=True)
 
     # this is the augmentation configuration we will use for testing:
     # only rescaling
@@ -241,6 +244,7 @@ def start_model():
     #x = Dense(4096, activation='relu', name='fc7new', trainable=True)(last)
     x = Dense(4, activation='sigmoid', name='predictor', trainable=True)(last)
     model = Model(model.input, x, name='newModel')
+
     return model
 
 def testModel(model,X_val,Y_val):
@@ -443,9 +447,40 @@ def run_training(name):
 
     callbacks_list = [checkp]
 
-    model = train_model(model, X_train, Y_train, X_val, Y_val)
+    model = train_model(model, X_train, Y_train, X_val, Y_val,callbacks_list)
 
     save_model(model,"../../CNN/Models/"+name+".json","../../CNN/Models/"+name+".h5")
+
+def run_gridsearch(name):
+    path="../Website/crowdsourcing/public/images/"
+    ref="CrowdData/pilot_aggregates_part1.csv"
+    [X, Y] = load_dataset(path, ref, 224)
+
+    X = preprocess_dataset(X)
+
+    model = KerasClassifier(build_fn=start_model, verbose=0)
+
+    checkpath = "checksgrid_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
+    checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
+                                    save_weights_only=True, mode='auto', period=5)
+
+    callbacks_list = [checkp]
+
+    #grid search parameters
+    batch_size = [1,4,10,20,40]
+    epochs = [5,10,20,30]
+    param_grid = dict(batch_size=batch_size, epochs=epochs)
+
+    grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=-1)
+    grid_result = grid.fit(X, Y)
+
+    print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
+    means = grid_result.cv_results_['mean_test_score']
+    stds = grid_result.cv_results_['std_test_score']
+    params = grid_result.cv_results_['params']
+    for mean, stdev, param in zip(means, stds, params):
+        print("%f (%f) with: %r" % (mean, stdev, param))
+
 
 def test_scene_prediction():
     WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
@@ -492,6 +527,8 @@ def tes_training_work():
 
 #run_training("basic1")
 #tes_training_work()
+
+#run_gridsearch("getsize")
 
 #[model,X,Y,X_tes,Y_tes,preds] = tesTrial()
 #test_prediction()

@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dcc3337b-3a5a-4d53-9bfc-ee5585fc771a" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1_analysis.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2_analysis.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_judgements_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_judgements_analysis.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/LogAnalysis/LogStatistics.xlsx" afterPath="$PROJECT_DIR$/Analysis/LogAnalysis/LogStatistics.xlsx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/image_classifier.py" afterPath="$PROJECT_DIR$/Analysis/image_classifier.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/statistics.py" afterPath="$PROJECT_DIR$/Analysis/statistics.py" />
     </list>
     <ignored path="urbattractive.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -61,8 +66,8 @@
       <file leaf-file-name="image_classifier.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="178">
-              <caret line="430" column="44" selection-start-line="430" selection-start-column="44" selection-end-line="430" selection-end-column="44" />
+            <state relative-caret-position="512">
+              <caret line="536" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="536" selection-end-column="0" />
               <folding>
                 <element signature="e#91#100#0" expanded="true" />
               </folding>
@@ -95,8 +100,8 @@
       <file leaf-file-name="statistics.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analysis/statistics.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4964">
-              <caret line="293" column="36" selection-start-line="293" selection-start-column="36" selection-end-line="293" selection-end-column="36" />
+            <state relative-caret-position="1632">
+              <caret line="97" column="0" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
               <folding>
                 <element signature="e#39#58#0" expanded="true" />
               </folding>
@@ -139,11 +144,11 @@
         <option value="$PROJECT_DIR$/Analysis/dataset_expansion" />
         <option value="$PROJECT_DIR$/Analysis/testKeras/alexnet.py" />
         <option value="$PROJECT_DIR$/Analysis/testKeras/image_classifier_bck.py" />
-        <option value="$PROJECT_DIR$/Analysis/statistics.py" />
         <option value="$PROJECT_DIR$/Analysis/CNNModels/data.csv" />
         <option value="$PROJECT_DIR$/Analysis/testKeras/test_caffe.py" />
         <option value="$PROJECT_DIR$/Analysis/scene_analysis.py" />
         <option value="$PROJECT_DIR$/Analysis/Data/val_img.csv" />
+        <option value="$PROJECT_DIR$/Analysis/statistics.py" />
         <option value="$PROJECT_DIR$/Analysis/image_classifier.py" />
       </list>
     </option>
@@ -155,10 +160,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1358" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="x" value="676" />
+    <option name="width" value="697" />
+    <option name="height" value="735" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -204,7 +208,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -418,6 +421,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -771,14 +775,14 @@
     <option name="totallyTimeSpent" value="30000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1358" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="676" y="0" width="697" height="735" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1734375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2804699" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31501058" sideWeight="0.2359375" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.272" sideWeight="0.2613803" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31501058" sideWeight="0.7640625" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.272" sideWeight="0.7386197" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1071,16 +1075,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Analysis/statistics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4964">
-          <caret line="293" column="36" selection-start-line="293" selection-start-column="36" selection-end-line="293" selection-end-column="36" />
-          <folding>
-            <element signature="e#39#58#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Analysis/Data/val_img.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -1088,10 +1082,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Analysis/statistics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1632">
+          <caret line="97" column="0" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
+          <folding>
+            <element signature="e#39#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="430" column="44" selection-start-line="430" selection-start-column="44" selection-end-line="430" selection-end-column="44" />
+        <state relative-caret-position="512">
+          <caret line="536" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="536" selection-end-column="0" />
           <folding>
             <element signature="e#91#100#0" expanded="true" />
           </folding>

@@ -8,15 +8,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from shutil import copy
 
+import scipy
 
 
 def normalize(df):
     # normalization
-    df["familiarity"] = df["familiarity"].map({'yes': 5, 'no': 1})
-    df["friendliness"] = df["friendliness"].map({'yes': 5, 'no': 1})
-    df["pleasure"] = (df["pleasure"] * 2) + 3
-    df["arousal"] = (df["arousal"] * 2) + 3
-    df["dominance"] = (df["dominance"] * 2) + 3
+    df["familiarity"] = df["familiarity"].map({'yes': 1, 'no': 0})
+    df["friendliness"] = df["friendliness"].map({'yes': 5, 'no': 0})
+    df["pleasure"] = df["pleasure"]
+    df["arousal"] = df["arousal"]
+    df["dominance"] = df["dominance"]
 
     df["img_id"] = df["img_id"].fillna(-99).astype(int)
     df["loc_id"] = df["loc_id"].fillna(-99).astype(int)
@@ -62,9 +63,19 @@ def generate_loc_im(in_file,out_file):
 
 def corr_mat(dat):
     #compute correlation matrix
-    df_attrib_scores =  df[["attractiveness","familiarity","uniqueness","friendliness","pleasure","arousal","dominance"]]
+    df_attrib_scores =  dat[["attractiveness","familiarity","uniqueness","friendliness","pleasure","arousal","dominance"]]
     correl_mat = df_attrib_scores.corr()
     return correl_mat
+
+def spearman_corr(dat):
+    ats = ["attractiveness","familiarity","uniqueness","friendliness","pleasure","arousal","dominance"]
+    corr,pval = scipy.stats.spearmanr(dat[ats])
+    for i in range(0,7):
+        line = ats[i]
+        for j in range(0, 7):
+            line = line + "|" + str(corr[i][j])
+        print(line)
+
 
 def save_corr_mat(cm,fname):
     cm.to_csv(fname)
@@ -99,9 +110,38 @@ def aggregate_data_part1(df,df_img):
     return df_aggr
 
 
+def aggregate_attribute_part1(df,df_img):
+    df_aggr_attr_part1 = pd.DataFrame(
+        columns=["img_id", "num_user", "attractiveness","familiarity","uniqueness","friendliness","pleasure","arousal","dominance"])
+
+    for idx, row in df_img.iterrows():
+        img_id = int(row["id"])
+        df_filtered = df[df["img_id"] == img_id]
+        newdat = {}
+        newdat["img_id"] = img_id
+        newdat["num_user"] = df_filtered.shape[0]
+        newdat["attractiveness"] = np.nanmedian(df_filtered["attractiveness"].values)
+        newdat["familiarity"] = np.nanmedian(df_filtered["familiarity"].values)
+        newdat["uniqueness"] = np.nanmedian(df_filtered["uniqueness"].values)
+        newdat["friendliness"] = np.nanmedian(df_filtered["friendliness"].values)
+        newdat["pleasure"] = np.nanmean(df_filtered["pleasure"].values)
+        newdat["arousal"] = np.nanmean(df_filtered["arousal"].values)
+        newdat["dominance"] = np.nanmean(df_filtered["dominance"].values)
+        df_aggr_attr_part1 = df_aggr_attr_part1.append(newdat, ignore_index=True)
+    df_aggr_attr_part1["img_id"] = df_aggr_attr_part1["img_id"].astype(int)
+    df_aggr_attr_part1["num_user"] = df_aggr_attr_part1["num_user"].astype(int)
+    df_aggr_attr_part1["attractiveness"] = df_aggr_attr_part1["attractiveness"].astype(int)
+    df_aggr_attr_part1["familiarity"] = df_aggr_attr_part1["familiarity"].astype(int)
+    df_aggr_attr_part1["uniqueness"] = df_aggr_attr_part1["uniqueness"].astype(int)
+    df_aggr_attr_part1["friendliness"] = df_aggr_attr_part1["friendliness"].astype(int)
+
+    return df_aggr_attr_part1
+
+
+
 def aggregate_data_part2(df):
     df_aggr = pd.DataFrame(columns=["loc_id", "num_user","mean","median","var","vote1","vote2","vote3","vote4","vote5"])
-    for loc_id in df_part2["loc_id"].unique():
+    for loc_id in df["loc_id"].unique():
         df_filtered = df[df["loc_id"]==loc_id]
         values = df_filtered["attractiveness"].values
 
@@ -164,25 +204,23 @@ def summarize_data(df_aggr_part1, df_aggr_part2, loc_im):
 
 def label_tuning(df_summary):
     df_out = df_summary
+    for idx, row in df_summary.iterrows():
+        # tuning image labels
+        for i in range(1, 5):
+            if (row["var" + str(i)] > 1):
+                lab_left = 1
+                lab_right = 1
 
-        for idx, row in df_summary.iterrows():
-
-            # tuning image labels
-            for i in range(1, 5):
-                if (row["var" + str(i)] > 1):
-                    lab_left =
-                    lab_right =
-
-            #tuning overall attractiveness
-            var_loc = row["var_loc"]
-            lab_loc = row["lab_loc"]
-            if(var_loc > 1):
-                avg_lab = (row["lab1"]+row["lab2"]+row["lab3"]+row["lab4"])/4
-                if(abs(lab_loc-avg_lab) >= 1):
-                    if lab_loc > avg_lab:
-                        df_out[idx]["lab_loc"] = lab_loc - 1
-                    else:
-                        df_out[idx]["lab_loc"] = lab_loc + 1
+        #tuning overall attractiveness
+        var_loc = row["var_loc"]
+        lab_loc = row["lab_loc"]
+        if(var_loc > 1):
+            avg_lab = (row["lab1"]+row["lab2"]+row["lab3"]+row["lab4"])/4
+            if(abs(lab_loc-avg_lab) >= 1):
+                if lab_loc > avg_lab:
+                    df_out[idx]["lab_loc"] = lab_loc - 1
+                else:
+                    df_out[idx]["lab_loc"] = lab_loc + 1
 
 
 
@@ -273,22 +311,21 @@ dataset_image_loc = 'InputImages/Training'
 summary_filename = "CrowdData/summary_ori.csv"
 
 
-#activities
-[df,df_part1,df_part2] = read_data(input_filename)
-[df_img,loc_im,df_loc] = read_ref(img_data_filename,loc_im_filename,loc_filename)
+def activities():
+    #activities
+    [df,df_part1,df_part2] = read_data(input_filename)
+    [df_img,loc_im,df_loc] = read_ref(img_data_filename,loc_im_filename,loc_filename)
 
-df_aggr_part1 = aggregate_data_part1(df_part1,df_img)
-save_df(df_aggr_part1,aggr_part1_filename)
+    df_aggr_part1 = aggregate_data_part1(df_part1,df_img)
+    save_df(df_aggr_part1,aggr_part1_filename)
 
-df_aggr_part2 = aggregate_data_part2(df_part2)
-save_df(df_aggr_part2,aggr_part2_filename)
+    df_aggr_part2 = aggregate_data_part2(df_part2)
+    save_df(df_aggr_part2,aggr_part2_filename)
 
-create_dataset_input(df_aggr_part1,input_image_loc,dataset_image_loc)
+    create_dataset_input(df_aggr_part1,input_image_loc,dataset_image_loc)
 
+    df_aggr_part1 = pd.read_csv(aggr_part1_filename)
+    df_aggr_part2 = pd.read_csv(aggr_part2_filename)
 
-
-df_aggr_part1 = pd.read_csv(aggr_part1_filename)
-df_aggr_part2 = pd.read_csv(aggr_part2_filename)
-
-df_summary = summarize_data(df_aggr_part1, df_aggr_part2, loc_im)
-save_df(df_summary,summary_filename)
+    df_summary = summarize_data(df_aggr_part1, df_aggr_part2, loc_im)
+    save_df(df_summary,summary_filename)
