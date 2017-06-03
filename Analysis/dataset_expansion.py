@@ -37,7 +37,61 @@ def download_image(lat, long, heading, filename):
 
 #def get_nearby_image(lat,long):
 
-#def get_other_views(lat,long, init_heading, known_values):
+def attr_f(input_dir,img_name,loc_im,df_img, df_vote):
+    nameparts = img_name.split("_")
+    loc_id =  int(nameparts[1])
+    dir = int(nameparts[2].split(".")[0])
+    i = 1
+    img_id_1 = loc_im[loc_id]["img"+str(i)]
+    img_1 = df_img[df_img["id"]==img_id_1]
+    dir_1 = img_1["heading"].values[0]
+
+    if((dir_1-dir)%90 == 0):
+        pos_dir = ((dir-dir_1)//90)%4+1
+        #print(str(dir)+" is the same as "+str(df_img[df_img["id"]==loc_im[loc_id]["img"+str(pos_dir)]]["heading"].values[0]))
+        attr_dir = df_vote[df_vote["img_id"] == loc_im[loc_id]["img"+str(pos_dir)]]["median"].values[0]
+        #print(str(dir)+" <=> "+str(attr_dir))
+        return attr_dir
+    else:
+        pos_left_dir = ((dir-dir_1)//90)%4+1
+        pos_right_dir = pos_left_dir%4+1
+
+        dir_left = df_img[df_img["id"]==loc_im[loc_id]["img"+str(pos_left_dir)]]["heading"].values[0]
+        dir_right = (dir_left+90)%360
+        #print(str(dir) +" is between "+str(dir_left) + " and "+ str(dir_right))
+
+        attr_left = df_vote[df_vote["img_id"] == loc_im[loc_id]["img"+str(pos_left_dir)]]["median"].values[0]
+        attr_right = df_vote[df_vote["img_id"] == loc_im[loc_id]["img" + str(pos_right_dir)]]["median"].values[0]
+
+        closeness_left =  ((dir_right-dir)%90) / 90
+        closeness_right = ((dir-dir_left) % 90) / 90
+
+        pred_attr =  closeness_left*attr_left + closeness_right*attr_right
+        #print(str(dir_left)+":"+str(dir)+":"+str(dir_right)+" <=> "+str(attr_left)+":"+str(pred_attr)+":"+str(attr_right))
+        return round(pred_attr)
+
+
+
+
+def label_views(loc_im,df_img=pd.read_csv("Data/images.csv"),df_vote=pd.read_csv("CrowdData/pilot_aggregates_part1.csv"),input_dir="../../DATA/Expansion_view/",output_log="../../DATA/attr_exp_view.csv"):
+    df_expview = pd.DataFrame(columns=["loc_id","img_name","attractiveness"])
+
+    files = [x for x in os.listdir(input_dir) if x.endswith('.jpg')]
+    for loc_id in loc_im.keys():
+        imgs = [x for x in files if x.split("_")[1]==str(loc_id)]
+        for img_name in imgs:
+            attr = attr_f(input_dir, img_name, loc_im,df_img, df_vote)
+            newdat = {}
+            newdat["loc_id"] = loc_id
+            newdat["img_name"] = img_name
+            newdat["attractiveness"] = attr
+            df_expview = df_expview.append(newdat, ignore_index=True)
+    df_expview["loc_id"] = df_expview["loc_id"].astype(int)
+    df_expview["attractiveness"] = df_expview["attractiveness"].astype(int)
+    df_expview.to_csv(output_log,sep=",")
+    return df_expview
+
+
 
 def get_hist_feat(img_file):
     hist_feat = np.array([])
@@ -136,5 +190,5 @@ loc_im_filename = "Data/loc_im.csv"
 loc_data_filename = "Data/locations.csv"
 [df_img,df_loc,loc_im] = read_ref(img_data_filename,loc_data_filename,loc_im_filename)
 
-for lid in df_loc["loc_id"].values:
-    expand_view(lid, df_img, df_loc, loc_im)
+#for lid in df_loc["loc_id"].values:
+#    expand_view(lid, df_img, df_loc, loc_im)

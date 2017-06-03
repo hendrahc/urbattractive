@@ -180,6 +180,37 @@ def load_dataset(path,ref_file,width):
     Y = np.array(Y)
     return [X,Y]
 
+def load_exp_view(path,ref_file,width):
+    ref = pd.read_csv(ref_file)
+    X = []
+    Y = []
+    test = []
+    for index,row in ref.iterrows():
+        filename = path + row["img_path"]
+        img = image.load_img(filename, target_size=(width, width))
+        x = image.img_to_array(img)
+        cls = row["attractiveness"]
+        y = []
+
+        if cls==1:
+            y = [0, 0, 0, 0]
+        elif cls == 2:
+            y = [1, 0, 0, 0]
+        elif cls == 3:
+            y = [1, 1, 0, 0]
+        elif cls == 4:
+            y = [1, 1, 1, 0]
+        elif cls == 5:
+            y = [1, 1, 1, 1]
+        else:
+            y = [1, 1, 0, 0]
+
+        X.append(x)
+        Y.append(y)
+    X = np.array(X)
+    Y = np.array(Y)
+    return [X,Y]
+
 def predict_attractiveness(model,img_path):
     x = read_img(img_path)
     x = preprocess_image(x)
@@ -197,7 +228,7 @@ def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[]):
     img_width, img_height = 224, 224
     nb_train_samples = X_train.shape[0]
     nb_validation_samples = X_val.shape[0]
-    epochs = 20
+    epochs = 10
     batch_size = 5
 
     optim = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.000001, nesterov=True);
@@ -416,8 +447,8 @@ def binarize_result(preds):
 def run_training(name):
     path="../Website/crowdsourcing/public/images/"
     ref="CrowdData/pilot_aggregates_part1.csv"
-    #[X, Y] = load_dataset(path, ref, 224)
-    [X,Y] = load_dataset(path,ref,400)
+    [X, Y] = load_dataset(path, ref, 224)
+    #[X,Y] = load_dataset(path,ref,400)
 
     # split for training and validation
     n = X.shape[0]
@@ -435,15 +466,23 @@ def run_training(name):
     X_val = X[forval]
     Y_val = Y[forval]
 
-    [X_train, Y_train] = get_crops(X_train, Y_train)
-    [X_val, Y_val] = get_crops(X_val, Y_val)
+    #use expansion dataset
+    exp_path = "../../DATA/Expansion_view/"
+    exp_ref = "../../DATA/attr_exp_view.csv"
+    [X_train, Y_train] = load_exp_view(exp_path, exp_ref, 224)
+
+    #activate cropping
+    #[X_train, Y_train] = get_crops(X_train, Y_train)
+    #[X_val, Y_val] = get_crops(X_val, Y_val)
 
     model = start_model()
-    model.load_weights("??")
+
+    #previous training load
+    #model.load_weights("??")
 
     checkpath = "checks_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
     checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
-                                    save_weights_only=True, mode='auto', period=5)
+                                    save_weights_only=True, mode='auto', period=2)
 
     callbacks_list = [checkp]
 
