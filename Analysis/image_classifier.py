@@ -229,7 +229,7 @@ def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[]):
     nb_train_samples = X_train.shape[0]
     nb_validation_samples = X_val.shape[0]
     epochs = 10
-    batch_size = 5
+    batch_size = 10
 
     optim = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.000001, nesterov=True);
 
@@ -445,6 +445,16 @@ def binarize_result(preds):
         p[i] = convert_to_binary(preds[i])
     return p
 
+class LossHistory(keras.callbacks.Callback):
+    def on_train_begin(self, logs={}):
+        self.losses = []
+
+    def on_batch_end(self, batch, logs={}):
+        self.losses.append(logs.get('loss'))
+
+    def on_epoch_end(self, batch, logs={}):
+        print(self.losses)
+
 
 def run_training(name):
     path="../Website/crowdsourcing/public/images/"
@@ -485,9 +495,11 @@ def run_training(name):
 
     checkpath = "checks_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
     checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
-                                    save_weights_only=True, mode='auto', period=2)
+                                    save_weights_only=True, mode='auto', period=1)
 
-    callbacks_list = [checkp]
+    losslog = LossHistory()
+
+    callbacks_list = [checkp,losslog]
 
     model = train_model(model, X_train, Y_train, X_val, Y_val,callbacks_list)
 
