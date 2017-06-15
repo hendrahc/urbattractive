@@ -142,8 +142,8 @@ def label_views_same(df_loc,loc_im,df_img=pd.read_csv("Data/images.csv"),df_vote
             if(attr_left == attr_right):
                 dir_left = df_img[df_img["id"]==img_id_left]["heading"].values[0]
                 dir_new = {}
-                dir_new[1] = (dir_left+30)%365
-                dir_new[2] = (dir_left + 60) % 365
+                dir_new[0] = (dir_left+30)%360
+                dir_new[1] = (dir_left + 60) % 360
 
                 for k in [0,1]:
                     newdat = {}

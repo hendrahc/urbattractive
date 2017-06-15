@@ -466,7 +466,7 @@ def run_training(name):
     n = X.shape[0]
     n_fold = 5
     fold_size = int(n/n_fold)
-	
+
     X = preprocess_dataset(X)
 	
     fold = 0
@@ -479,10 +479,11 @@ def run_training(name):
     Y_val = Y[forval]
 
     #use expansion dataset
-    exp_path = "Expansion/"
-    exp_ref = "CrowdData/attr_exp_view.csv"
-    exp_ref = "CrowdData/attr_exp_view_same.csv"
+    exp_path = "../../DATA/Expansion_view/"
+    exp_ref = "Expansion/attr_exp_view.csv"
+    exp_ref = "Expansion/attr_exp_view_same.csv"
     [X_train, Y_train] = load_exp_view(exp_path, exp_ref, 224)
+    X_train = preprocess_dataset(X_train)
 
     #activate cropping
     #[X_train, Y_train] = get_crops(X_train, Y_train)
