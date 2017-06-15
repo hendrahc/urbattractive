@@ -479,7 +479,7 @@ def run_training(name):
     Y_val = Y[forval]
 
     #use expansion dataset
-    exp_path = "../../DATA/Expansion_view/"
+    exp_path = "Expansion/"
     exp_ref = "CrowdData/attr_exp_view.csv"
     exp_ref = "CrowdData/attr_exp_view_same.csv"
     [X_train, Y_train] = load_exp_view(exp_path, exp_ref, 224)
