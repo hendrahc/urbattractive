@@ -116,7 +116,7 @@ def label_views_linear(df_loc,loc_im,df_img=pd.read_csv("Data/images.csv"),df_vo
 
                 newdat = {}
                 newdat["loc_id"] = loc_id
-                newdat["img_name"] = input_dir + "EXPV_" + str(loc_id) + "_" + str(dir_new) + ".jpg"
+                newdat["img_name"] = "EXPV_" + str(loc_id) + "_" + str(dir_new) + ".jpg"
                 newdat["attractiveness"] = attr_pred
                 df_expview_linear = df_expview_linear.append(newdat, ignore_index=True)
 
@@ -148,7 +148,7 @@ def label_views_same(df_loc,loc_im,df_img=pd.read_csv("Data/images.csv"),df_vote
                 for k in [0,1]:
                     newdat = {}
                     newdat["loc_id"] = loc_id
-                    newdat["img_name"] = input_dir+"EXPV_"+str(loc_id)+"_"+str(dir_new[k])+".jpg"
+                    newdat["img_name"] = "EXPV_"+str(loc_id)+"_"+str(dir_new[k])+".jpg"
                     newdat["attractiveness"] = attr_left
                     df_expview_same = df_expview_same.append(newdat, ignore_index=True)
 
