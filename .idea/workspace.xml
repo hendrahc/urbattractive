@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dcc3337b-3a5a-4d53-9bfc-ee5585fc771a" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1_analysis.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2_analysis.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_judgements_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_judgements_analysis.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/dataset_expansion.py" afterPath="$PROJECT_DIR$/Analysis/dataset_expansion.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/image_classifier.py" afterPath="$PROJECT_DIR$/Analysis/image_classifier.py" />
     </list>
@@ -58,21 +62,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="image_classifier.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="image_classifier.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
-              <caret line="45" column="48" selection-start-line="45" selection-start-column="48" selection-end-line="45" selection-end-column="48" />
-              <folding />
+            <state relative-caret-position="1469">
+              <caret line="473" column="43" selection-start-line="473" selection-start-column="43" selection-end-line="473" selection-end-column="43" />
+              <folding>
+                <element signature="e#91#100#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dataset_expansion.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dataset_expansion.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Analysis/dataset_expansion.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="75" column="159" selection-start-line="75" selection-start-column="131" selection-end-line="75" selection-end-column="159" />
+            <state relative-caret-position="262">
+              <caret line="104" column="43" selection-start-line="104" selection-start-column="43" selection-end-line="104" selection-end-column="43" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -83,7 +89,7 @@
       <file leaf-file-name="attr_exp_view.csv" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analysis/CrowdData/attr_exp_view.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-122703">
+            <state relative-caret-position="102">
               <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
               <folding />
             </state>
@@ -115,7 +121,7 @@
       <file leaf-file-name="statistics.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analysis/statistics.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-697">
+            <state relative-caret-position="1785">
               <caret line="106" column="4" selection-start-line="106" selection-start-column="4" selection-end-line="106" selection-end-column="53" />
               <folding>
                 <element signature="e#39#58#0" expanded="true" />
@@ -164,8 +170,8 @@
         <option value="$PROJECT_DIR$/Analysis/scene_analysis.py" />
         <option value="$PROJECT_DIR$/Analysis/Data/val_img.csv" />
         <option value="$PROJECT_DIR$/Analysis/statistics.py" />
-        <option value="$PROJECT_DIR$/Analysis/dataset_expansion.py" />
         <option value="$PROJECT_DIR$/Analysis/image_classifier.py" />
+        <option value="$PROJECT_DIR$/Analysis/dataset_expansion.py" />
       </list>
     </option>
   </component>
@@ -225,7 +231,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -414,42 +419,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="urbattractive" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="urbattractive" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Analysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CrowdData" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="urbattractive" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="urbattractive" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Analysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="CNNModels" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -457,6 +426,7 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -815,9 +785,9 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20204978" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.44164038" sideWeight="0.261347" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4400631" sideWeight="0.27013177" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.44164038" sideWeight="0.738653" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4400631" sideWeight="0.72986823" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -1098,7 +1068,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Analysis/statistics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-697">
+        <state relative-caret-position="1785">
           <caret line="106" column="4" selection-start-line="106" selection-start-column="4" selection-end-line="106" selection-end-column="53" />
           <folding>
             <element signature="e#39#58#0" expanded="true" />
@@ -1116,27 +1086,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Analysis/CrowdData/attr_exp_view.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-122703">
+        <state relative-caret-position="102">
           <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Analysis/dataset_expansion.py">
+    <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="75" column="159" selection-start-line="75" selection-start-column="131" selection-end-line="75" selection-end-column="159" />
+        <state relative-caret-position="1469">
+          <caret line="473" column="43" selection-start-line="473" selection-start-column="43" selection-end-line="473" selection-end-column="43" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#91#100#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
+    <entry file="file://$PROJECT_DIR$/Analysis/dataset_expansion.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="45" column="48" selection-start-line="45" selection-start-column="48" selection-end-line="45" selection-end-column="48" />
-          <folding />
+        <state relative-caret-position="262">
+          <caret line="104" column="43" selection-start-line="104" selection-start-column="43" selection-end-line="104" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

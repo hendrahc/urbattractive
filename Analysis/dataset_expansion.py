@@ -73,7 +73,7 @@ def attr_f(input_dir,img_name,loc_im,df_img, df_vote):
 
 
 
-def label_views(loc_im,df_img=pd.read_csv("Data/images.csv"),df_vote=pd.read_csv("CrowdData/pilot_aggregates_part1.csv"),input_dir="../../DATA/Expansion_view/",output_log="../../DATA/attr_exp_view.csv"):
+def label_views(loc_im,df_img=pd.read_csv("Data/images.csv"),df_vote=pd.read_csv("CrowdData/pilot_aggregates_part1.csv"),input_dir="../../DATA/Expansion_view/",output_log="Expansion/attr_exp_view.csv"):
     df_expview = pd.DataFrame(columns=["loc_id","img_name","attractiveness"])
 
     files = [x for x in os.listdir(input_dir) if x.endswith('.jpg')]
@@ -90,6 +90,74 @@ def label_views(loc_im,df_img=pd.read_csv("Data/images.csv"),df_vote=pd.read_csv
     df_expview["attractiveness"] = df_expview["attractiveness"].astype(int)
     df_expview.to_csv(output_log,sep=",")
     return df_expview
+
+
+def label_views_linear(df_loc,loc_im,df_img=pd.read_csv("Data/images.csv"),df_vote=pd.read_csv("CrowdData/pilot_aggregates_part1.csv"),input_dir="../../DATA/Expansion_view/",output_log="Expansion/attr_exp_view_linear.csv"):
+    df_expview_linear = pd.DataFrame(columns=["loc_id", "img_name", "attractiveness"])
+    for loc_id in loc_im.keys():
+        for pos in [0, 1, 2, 3]:
+            pos_left = pos + 1
+            pos_right = (pos + 1) % 4 + 1
+            img_id_left = loc_im[loc_id]["img" + str(pos_left)]
+            img_id_right = loc_im[loc_id]["img" + str(pos_right)]
+
+            attr_left = df_vote[df_vote["img_id"] == img_id_left]["median"].values[0]
+            attr_right = df_vote[df_vote["img_id"] == img_id_right]["median"].values[0]
+
+
+            dir_left = df_img[df_img["id"] == img_id_left]["heading"].values[0]
+
+            for k in [0, 1]:
+                dir_new = (dir_left + (k+1)*30 )%360
+
+                attr_pred = attr_left
+                if k==1:
+                    attr_pred = attr_right
+
+                newdat = {}
+                newdat["loc_id"] = loc_id
+                newdat["img_name"] = input_dir + "EXPV_" + str(loc_id) + "_" + str(dir_new) + ".jpg"
+                newdat["attractiveness"] = attr_pred
+                df_expview_linear = df_expview_linear.append(newdat, ignore_index=True)
+
+    df_expview_linear["loc_id"] = df_expview_linear["loc_id"].astype(int)
+    df_expview_linear["attractiveness"] = df_expview_linear["attractiveness"].astype(int)
+    df_expview_linear.to_csv(output_log, sep=",")
+    return df_expview_linear
+
+
+
+def label_views_same(df_loc,loc_im,df_img=pd.read_csv("Data/images.csv"),df_vote=pd.read_csv("CrowdData/pilot_aggregates_part1.csv"),input_dir="../../DATA/Expansion_view/",output_log="Expansion/attr_exp_view_same.csv"):
+    df_expview_same = pd.DataFrame(columns=["loc_id", "img_name", "attractiveness"])
+    for loc_id in loc_im.keys():
+        for pos in [0,1,2,3]:
+            pos_left = pos+1
+            pos_right = (pos+1)%4+1
+            img_id_left = loc_im[loc_id]["img"+str(pos_left)]
+            img_id_right = loc_im[loc_id]["img" + str(pos_right)]
+
+            attr_left = df_vote[df_vote["img_id"]==img_id_left]["median"].values[0]
+            attr_right = df_vote[df_vote["img_id"] == img_id_right]["median"].values[0]
+
+            if(attr_left == attr_right):
+                dir_left = df_img[df_img["id"]==img_id_left]["heading"].values[0]
+                dir_new = {}
+                dir_new[1] = (dir_left+30)%365
+                dir_new[2] = (dir_left + 60) % 365
+
+                for k in [0,1]:
+                    newdat = {}
+                    newdat["loc_id"] = loc_id
+                    newdat["img_name"] = input_dir+"EXPV_"+str(loc_id)+"_"+str(dir_new[k])+".jpg"
+                    newdat["attractiveness"] = attr_left
+                    df_expview_same = df_expview_same.append(newdat, ignore_index=True)
+
+    df_expview_same["loc_id"] = df_expview_same["loc_id"].astype(int)
+    df_expview_same["attractiveness"] = df_expview_same["attractiveness"].astype(int)
+    df_expview_same.to_csv(output_log, sep=",")
+    return df_expview_same
+
+
 
 
 
@@ -123,8 +191,7 @@ def read_ref(img_data_f,loc_data_f,loc_im_f):
         views_im[row["loc_id"]] = {"img1": row["img1"], "img2": row["img2"], "img3": row["img3"], "img4": row["img4"]}
     return [df_img,df_loc,views_im]
 
-def expand_view(id,df_img,df_loc,loc_im):
-    expand_view_dir = "../../DATA/Expansion_view/"
+def expand_view(id,df_img,df_loc,loc_im,expand_view_dir = "../../DATA/Expansion_view/"):
     headings = df_img[df_img["loc_id"]==id]["heading"].values
 
     #get coordinate

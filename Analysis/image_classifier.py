@@ -186,7 +186,7 @@ def load_exp_view(path,ref_file,width):
     Y = []
     test = []
     for index,row in ref.iterrows():
-        filename = path + row["img_path"]
+        filename = path + row["img_name"]
         img = image.load_img(filename, target_size=(width, width))
         x = image.img_to_array(img)
         cls = row["attractiveness"]
@@ -235,7 +235,9 @@ def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[]):
 
     model.compile(loss='binary_crossentropy',
                   optimizer=optim,
-                  metrics=[class_accuracy])
+                  #metrics=[class_accuracy]
+                  metrics=[]
+                  )
 
     # this is the augmentation configuration we will use for training
     train_datagen = ImageDataGenerator(
@@ -468,7 +470,8 @@ def run_training(name):
 
     #use expansion dataset
     exp_path = "../../DATA/Expansion_view/"
-    exp_ref = "../../DATA/attr_exp_view.csv"
+    exp_ref = "CrowdData/attr_exp_view.csv"
+    exp_ref = "CrowdData/attr_exp_view_same.csv"
     [X_train, Y_train] = load_exp_view(exp_path, exp_ref, 224)
 
     #activate cropping
