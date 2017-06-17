@@ -494,7 +494,7 @@ def run_training(name):
     #previous training load
     #model.load_weights("??")
 
-    checkpath = "checks_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
+    checkpath = "checks_"+name+"_{epoch:02d}_loss_{loss:.2f}_{val_loss:.2f}.h5"
     checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
                                     save_weights_only=True, mode='auto', period=1)
 
@@ -580,6 +580,48 @@ def tes_training_work():
 
     save_model(model, "../../CNN/Models/overfit2.json", "../../CNN/Models/overfit2.h5")
 
+def collect_log(logname):
+    path = "../Website/crowdsourcing/public/images/"
+    ref = "CrowdData/pilot_aggregates_part1.csv"
+    [X, Y] = load_dataset(path, ref, 224)
+
+    # split for training and validation
+    n = X.shape[0]
+    n_fold = 5
+    fold_size = int(n / n_fold)
+
+    X = preprocess_dataset(X)
+
+    fold = 0
+
+    forval = [i for i in range(fold * fold_size, (fold + 1) * fold_size)]
+    fortrain = [i for i in range(0, n) if i not in forval]
+    X_train = X[fortrain]
+    Y_train = Y[fortrain]
+    X_val = X[forval]
+    Y_val = Y[forval]
+
+    df_log = pd.DataFrame(columns=["modelname", "loss_train", "loss_val", "acc_train", "acc_val"])
+
+    modelfiles = [x for x in os.listdir(".") if x.endswith('.h5')]
+    modelfiles = modelfiles[0:2] #sample for test
+    for modelfile in modelfiles:
+        newlog = {}
+        newlog["modelname"] = modelfile
+        model = start_model()
+        model.load_weights(modelfile)
+        model.compile(loss='binary_crossentropy', optimizer="SGD", metrics=[class_accuracy])
+        eval_train = model.evaluate(X_train,Y_train)
+        newlog["loss_train"] = eval_train[0]
+        newlog["acc_train"] = eval_train[1]
+        eval_val = model.evaluate(X_val, Y_val)
+        newlog["loss_val"] = eval_val[0]
+        newlog["acc_val"] = eval_val[1]
+        df_log = df_log.append(newlog, ignore_index=True)
+        df_log.to_csv(logname, sep=",")
+
+
+
 #run_training("basic1")
 #tes_training_work()
 
@@ -589,3 +631,4 @@ def tes_training_work():
 #test_prediction()
 #predict_scenes()
 #experiment("basic_ori")
+#collect_log("current_log.txt")
