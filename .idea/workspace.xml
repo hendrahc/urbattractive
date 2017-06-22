@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dcc3337b-3a5a-4d53-9bfc-ee5585fc771a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/attr_funct.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/attr_funct.xlsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/Data/SceneFeatures.xlsx" afterPath="$PROJECT_DIR$/Analysis/Data/SceneFeatures.xlsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/image_classifier.py" afterPath="$PROJECT_DIR$/Analysis/image_classifier.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/statistics.py" afterPath="$PROJECT_DIR$/Analysis/statistics.py" />
     </list>
     <ignored path="urbattractive.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -42,8 +38,8 @@
       <file leaf-file-name="image_classifier.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
-              <caret line="462" column="46" selection-start-line="462" selection-start-column="46" selection-end-line="462" selection-end-column="46" />
+            <state relative-caret-position="151">
+              <caret line="592" column="0" selection-start-line="592" selection-start-column="0" selection-end-line="592" selection-end-column="0" />
               <folding>
                 <element signature="e#91#100#0" expanded="true" />
               </folding>
@@ -1099,8 +1095,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="462" column="46" selection-start-line="462" selection-start-column="46" selection-end-line="462" selection-end-column="46" />
+        <state relative-caret-position="151">
+          <caret line="592" column="0" selection-start-line="592" selection-start-column="0" selection-end-line="592" selection-end-column="0" />
           <folding>
             <element signature="e#91#100#0" expanded="true" />
           </folding>

@@ -44,6 +44,7 @@ import datetime
 from PIL import Image
 
 from keras.wrappers.scikit_learn import KerasClassifier
+import math
 
 def create_basic_model():
     input_shape = (3,224,224)
@@ -285,17 +286,39 @@ def start_model():
 def testModel(model,X_val,Y_val):
     preds = model.predict(X_val,batch_size=10)
     preds = binarize_result(preds)
-    accuracy = get_accuracy(preds,Y_val)
+    [accuracy, rmse] = get_evaluation(preds,Y_val)
     print("accuracy = "+str(accuracy))
     return preds
 
-def get_accuracy(Y_pred,Y_true):
+def decode_class(bins):
+    if(bins[0]==0):
+        return 1
+    elif (bins[1]==0):
+        return 2
+    elif (bins[2] == 0):
+        return 3
+    elif (bins[3] == 0):
+        return 4
+    elif (bins[3] == 1):
+        return 5
+    return 3
+
+def get_evaluation(Y_pred,Y_true):
     n = Y_pred.shape[0]
     correct = 0
+    sum_error = 0.0
     for i in range(0,n):
-        if(np.array_equal(Y_pred[i],Y_true[i])):
+        y_pred = decode_class(Y_pred[i])
+        y_true = decode_class(Y_true[i])
+
+        if(y_pred == y_true):
             correct = correct+1
-    return float(correct)/float(n)
+
+        sum_error = sum_error + (y_true - y_pred)**2
+
+    accuracy = float(correct)/float(n)
+    rmse = math.sqrt(sum_error/float(n))
+    return [accuracy, rmse]
 
 def convert_weight(h5_file = '../../CNN/PredefinedModels/vgg_places.h5',out_file = '../../CNN/PredefinedModels/vgg_places_keras.h5'):
     res = h5py.File(out_file,'r+')
@@ -538,25 +561,32 @@ def tes_training_work():
 
     save_model(model, "../../CNN/Models/overfit2.json", "../../CNN/Models/overfit2.h5")
 
-def collect_log(logname):
+def collect_log(logname, modelfiles = []):
     path = "../Website/crowdsourcing/public/images/"
     ref = "CrowdData/pilot_aggregates_part1.csv"
 
     val_list = "CrowdData/val_list.csv"
     [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 224)
 
-    df_log = pd.DataFrame(columns=["modelname", "loss_train", "loss_val", "acc_train", "acc_val", "error_train", "error_val"])
+    df_log = pd.DataFrame(columns=["modelname", "acc_train", "acc_val", "rmse_train", "rmse_val"])
 
-    modelfiles = [x for x in os.listdir(".") if x.endswith('.h5')]
-    modelfiles = modelfiles[0:2] #sample for test
+    if (modelfiles == []):
+        modelfiles = [x for x in os.listdir(".") if x.endswith('.h5')]
     for modelfile in modelfiles:
         newlog = {}
         newlog["modelname"] = modelfile
         model = start_model()
         model.load_weights(modelfile)
         model.compile(loss='binary_crossentropy', optimizer="SGD", metrics=[])
+        preds_val = model.predict(X_val)
+        newlog["acc_val"] = preds_val[0]
+        newlog["rmse_val"] = preds_val[1]
+        print(modelfile + "|" +str(preds_val[0]) +"|"+ str(preds_val[1]))
         preds_train = model.predict(X_train)
-        preds_val = model.predict(Y_val)
+        newlog["acc_train"] = preds_train[0]
+        newlog["rmse_train"] = preds_train[1]
+        print(modelfile + "|" + str(preds_train[0]) + "|" + str(preds_train[1]))
+
         df_log = df_log.append(newlog, ignore_index=True)
     df_log.to_csv(logname, sep=",")
 
