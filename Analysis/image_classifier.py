@@ -568,6 +568,9 @@ def collect_log(logname, modelfiles = []):
     val_list = "CrowdData/val_list.csv"
     [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 224)
 
+    X_train = preprocess_dataset(X_train)
+    X_val = preprocess_dataset(X_val)
+
     df_log = pd.DataFrame(columns=["modelname", "acc_train", "acc_val", "rmse_train", "rmse_val"])
 
     if (modelfiles == []):
@@ -579,13 +582,15 @@ def collect_log(logname, modelfiles = []):
         model.load_weights(modelfile)
         model.compile(loss='binary_crossentropy', optimizer="SGD", metrics=[])
         preds_val = model.predict(X_val)
-        newlog["acc_val"] = preds_val[0]
-        newlog["rmse_val"] = preds_val[1]
-        print(modelfile + "|" +str(preds_val[0]) +"|"+ str(preds_val[1]))
+        eval_val = get_evaluation(preds_val,Y_val)
+        newlog["acc_val"] = eval_val[0]
+        newlog["rmse_val"] = eval_val[1]
+        print(modelfile + "|" +str(eval_val[0]) +"|"+ str(eval_val[1]))
         preds_train = model.predict(X_train)
-        newlog["acc_train"] = preds_train[0]
-        newlog["rmse_train"] = preds_train[1]
-        print(modelfile + "|" + str(preds_train[0]) + "|" + str(preds_train[1]))
+        eval_train = get_evaluation(preds_train, Y_train)
+        newlog["acc_train"] = eval_train[0]
+        newlog["rmse_train"] = eval_train[1]
+        print(modelfile + "|" + str(eval_train[0]) + "|" + str(eval_train[1]))
 
         df_log = df_log.append(newlog, ignore_index=True)
     df_log.to_csv(logname, sep=",")
