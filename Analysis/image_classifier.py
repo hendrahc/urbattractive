@@ -43,7 +43,6 @@ import h5py
 import datetime
 from PIL import Image
 
-from sklearn.model_selection import GridSearchCV
 from keras.wrappers.scikit_learn import KerasClassifier
 
 def create_basic_model():
@@ -81,7 +80,9 @@ def create_basic_model():
     # Classification block
     x = Flatten(name='flatten')(x)
     x = Dense(4096, activation='relu', name='fc6', trainable=False)(x)
+    x = Dropout(0.5, name="dropout_1")(x)
     x = Dense(4096, activation='relu', name='fc7', trainable=True)(x)
+    x = Dropout(0.5, name="dropout_2")(x)
     x = Dense(205, activation='softmax', name='fc8')(x)
 
     inputs = img_input
@@ -134,14 +135,24 @@ def read_img(img_file):
     x = image.img_to_array(img)
     return x
 
-def load_dataset(path,ref_file,width):
+def load_dataset(path,ref_file, val_list, width):
     ref = pd.read_csv(ref_file)
-    X = []
-    Y = []
-    test = []
+    X_train = []
+    Y_train = []
+    X_val = []
+    Y_val = []
+    vals = pd.read_csv(val_list)["img_id"].values.tolist()
     for index,row in ref.iterrows():
         filename = path + row["img_path"]
-        img = image.load_img(filename, target_size=(width, width))
+        img_id = row["img_id"]
+        is_val = (img_id in vals)
+
+        img = ""
+        if is_val:
+            img = image.load_img(filename, target_size=(224, 224))
+        else:
+            img = image.load_img(filename, target_size=(width, width))
+
         x = image.img_to_array(img)
         cls = row["median"]
         y = []
@@ -159,32 +170,23 @@ def load_dataset(path,ref_file,width):
         else:
             y = [1, 1, 0, 0]
 
-        '''
-        if cls == 1:
-            y = [1, 0, 0, 0,0]
-        elif cls == 2:
-            y = [0, 1, 0, 0, 0]
-        elif cls == 3:
-            y = [0, 0, 1, 0, 0]
-        elif cls == 4:
-            y = [0, 0, 0, 1, 0]
-        elif cls == 5:
-            y = [0, 0, 0, 0, 1]
+        if is_val:
+            X_val.append(x)
+            Y_val.append(y)
         else:
-            continue
-        '''
+            X_train.append(x)
+            Y_train.append(y)
 
-        X.append(x)
-        Y.append(y)
-    X = np.array(X)
-    Y = np.array(Y)
-    return [X,Y]
+    X_train = np.array(X_train)
+    Y_train = np.array(Y_train)
+    X_val = np.array(X_val)
+    Y_val = np.array(Y_val)
+    return [X_train, Y_train, X_val, Y_val]
 
-def load_exp_view(path,ref_file,width):
+def load_exp_view(path, ref_file, width):
     ref = pd.read_csv(ref_file)
-    X = []
-    Y = []
-    test = []
+    X_train = []
+    Y_train = []
     for index,row in ref.iterrows():
         filename = path + row["img_name"]
         img = image.load_img(filename, target_size=(width, width))
@@ -205,11 +207,11 @@ def load_exp_view(path,ref_file,width):
         else:
             y = [1, 1, 0, 0]
 
-        X.append(x)
-        Y.append(y)
-    X = np.array(X)
-    Y = np.array(Y)
-    return [X,Y]
+        X_train.append(x)
+        Y_train.append(y)
+    X_train = np.array(X_train)
+    Y_train = np.array(Y_train)
+    return [X_train,Y_train]
 
 def predict_attractiveness(model,img_path):
     x = read_img(img_path)
@@ -459,31 +461,19 @@ class LossHistory(keras.callbacks.Callback):
 def run_training(name):
     path="../Website/crowdsourcing/public/images/"
     ref="CrowdData/pilot_aggregates_part1.csv"
-    [X, Y] = load_dataset(path, ref, 224)
-    #[X,Y] = load_dataset(path,ref,400)
+    val_list = "CrowdData/val_list.csv"
+    [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 224)
+    #[X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 400)
 
-    # split for training and validation
-    n = X.shape[0]
-    n_fold = 5
-    fold_size = int(n/n_fold)
-
-    X = preprocess_dataset(X)
-	
-    fold = 0
-	
-    forval = [i for i in range(fold*fold_size, (fold+1)*fold_size)]
-    fortrain = [i for i in range(0, n) if i not in forval]
-    X_train = X[fortrain]
-    Y_train = Y[fortrain]
-    X_val = X[forval]
-    Y_val = Y[forval]
+    X_train = preprocess_dataset(X_train)
+    X_val = preprocess_dataset(X_val)
 
     #use expansion dataset
     exp_path = "../../DATA/Expansion_view/"
     exp_ref = "Expansion/attr_exp_view.csv"
-    exp_ref = "Expansion/attr_exp_view_same.csv"
-    [X_train, Y_train] = load_exp_view(exp_path, exp_ref, 224)
-    X_train = preprocess_dataset(X_train)
+    exp_ref_same = "Expansion/attr_exp_view_same.csv"
+    #[X_train, Y_train] = load_exp_view(exp_path, exp_ref, 224)
+    #X_train = preprocess_dataset(X_train)
 
     #activate cropping
     #[X_train, Y_train] = get_crops(X_train, Y_train)
@@ -499,43 +489,11 @@ def run_training(name):
                                     save_weights_only=True, mode='auto', period=1)
 
     losslog = LossHistory()
-
-    callbacks_list = [checkp,losslog]
+    callbacks_list = [checkp]
 
     model = train_model(model, X_train, Y_train, X_val, Y_val,callbacks_list)
 
-    save_model(model,"../../CNN/Models/"+name+".json","../../CNN/Models/"+name+".h5")
-
-def run_gridsearch(name):
-    path="../Website/crowdsourcing/public/images/"
-    ref="CrowdData/pilot_aggregates_part1.csv"
-    [X, Y] = load_dataset(path, ref, 224)
-
-    X = preprocess_dataset(X)
-
-    model = KerasClassifier(build_fn=start_model, verbose=0)
-
-    checkpath = "checksgrid_"+name+"_{epoch:02d}_acc_{class_accuracy:.2f}.h5"
-    checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
-                                    save_weights_only=True, mode='auto', period=5)
-
-    callbacks_list = [checkp]
-
-    #grid search parameters
-    batch_size = [1,4,10,20,40]
-    epochs = [5,10,20,30]
-    param_grid = dict(batch_size=batch_size, epochs=epochs)
-
-    grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=-1)
-    grid_result = grid.fit(X, Y)
-
-    print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
-    means = grid_result.cv_results_['mean_test_score']
-    stds = grid_result.cv_results_['std_test_score']
-    params = grid_result.cv_results_['params']
-    for mean, stdev, param in zip(means, stds, params):
-        print("%f (%f) with: %r" % (mean, stdev, param))
-
+    #save_model(model,"../../CNN/Models/"+name+".json","../../CNN/Models/"+name+".h5")
 
 def test_scene_prediction():
     WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
@@ -583,25 +541,11 @@ def tes_training_work():
 def collect_log(logname):
     path = "../Website/crowdsourcing/public/images/"
     ref = "CrowdData/pilot_aggregates_part1.csv"
-    [X, Y] = load_dataset(path, ref, 224)
 
-    # split for training and validation
-    n = X.shape[0]
-    n_fold = 5
-    fold_size = int(n / n_fold)
+    val_list = "CrowdData/val_list.csv"
+    [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 224)
 
-    X = preprocess_dataset(X)
-
-    fold = 0
-
-    forval = [i for i in range(fold * fold_size, (fold + 1) * fold_size)]
-    fortrain = [i for i in range(0, n) if i not in forval]
-    X_train = X[fortrain]
-    Y_train = Y[fortrain]
-    X_val = X[forval]
-    Y_val = Y[forval]
-
-    df_log = pd.DataFrame(columns=["modelname", "loss_train", "loss_val", "acc_train", "acc_val"])
+    df_log = pd.DataFrame(columns=["modelname", "loss_train", "loss_val", "acc_train", "acc_val", "error_train", "error_val"])
 
     modelfiles = [x for x in os.listdir(".") if x.endswith('.h5')]
     modelfiles = modelfiles[0:2] #sample for test
@@ -610,15 +554,11 @@ def collect_log(logname):
         newlog["modelname"] = modelfile
         model = start_model()
         model.load_weights(modelfile)
-        model.compile(loss='binary_crossentropy', optimizer="SGD", metrics=[class_accuracy])
-        eval_train = model.evaluate(X_train,Y_train)
-        newlog["loss_train"] = eval_train[0]
-        newlog["acc_train"] = eval_train[1]
-        eval_val = model.evaluate(X_val, Y_val)
-        newlog["loss_val"] = eval_val[0]
-        newlog["acc_val"] = eval_val[1]
+        model.compile(loss='binary_crossentropy', optimizer="SGD", metrics=[])
+        preds_train = model.predict(X_train)
+        preds_val = model.predict(Y_val)
         df_log = df_log.append(newlog, ignore_index=True)
-        df_log.to_csv(logname, sep=",")
+    df_log.to_csv(logname, sep=",")
 
 
 

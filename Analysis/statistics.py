@@ -4,9 +4,11 @@ os.chdir("Analysis")
 '''
 import pandas as pd
 import numpy as np
-#from sklearn import linear_model
+from sklearn import linear_model
+from sklearn.metrics import *
 import matplotlib.pyplot as plt
 from shutil import copy
+from sklearn.decomposition import FactorAnalysis
 
 import scipy
 
@@ -14,7 +16,7 @@ import scipy
 def normalize(df):
     # normalization
     df["familiarity"] = df["familiarity"].map({'yes': 1, 'no': 0})
-    df["friendliness"] = df["friendliness"].map({'yes': 5, 'no': 0})
+    df["friendliness"] = df["friendliness"].map({'yes': 1, 'no': 0})
     df["pleasure"] = df["pleasure"]
     df["arousal"] = df["arousal"]
     df["dominance"] = df["dominance"]
@@ -22,6 +24,16 @@ def normalize(df):
     df["img_id"] = df["img_id"].fillna(-99).astype(int)
     df["loc_id"] = df["loc_id"].fillna(-99).astype(int)
 
+    return df
+
+def norm_polar(df):
+    df["attractiveness"] = df["attractiveness"] - 3
+    df["familiarity"] = df["familiarity"].map({0: -2, 1: 2})
+    df["uniqueness"] = df["uniqueness"] - 3
+    df["friendliness"] = df["friendliness"].map({0: -2, 1: 2})
+    df["pleasure"] = df["pleasure"]*2
+    df["arousal"] = df["arousal"]*2
+    df["dominance"] = df["dominance"]*2
     return df
 
 def read_data(inp):
@@ -223,8 +235,25 @@ def label_tuning(df_summary):
                     df_out[idx]["lab_loc"] = lab_loc + 1
 
 
+def get_attr_function(df):
+    regr = linear_model.LinearRegression()
+    X = df[["attractiveness","familiarity","uniqueness","friendliness","pleasure","arousal","dominance"]]
+    X_train = df[["familiarity","uniqueness","friendliness","pleasure","arousal","dominance"]]
+    Y_train = df["attractiveness"]
+    regr.fit(X_train,Y_train)
 
+    print('Coefficients: \n', regr.coef_)
+    print("Mean squared error: %.2f"
+          % np.mean((regr.predict(X_train) - Y_train) ** 2))
+    preds = regr.predict(X_train)
+    preds = preds.round().astype(int)
+    confmat = confusion_matrix(Y_train,preds)
+    acc = accuracy_score(Y_train,preds)
 
+def factor_loading(df):
+    fa = FactorAnalysis(n_components=2)
+    fa.fit(df[["attractiveness", "familiarity", "uniqueness", "friendliness", "pleasure", "arousal", "dominance"]])
+    fa.components_
 
 '''
 #attractiveness function
