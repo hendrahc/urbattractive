@@ -3,6 +3,7 @@ import random
 import requests
 import os
 import random
+import numpy as np
 
 n_image = 300
 start_counter = 401
@@ -16,6 +17,7 @@ pitch = -0.76
 eps = 0.00005
 
 image_loc = "../../Dataset/Images_PILOT2/"
+mass_loc = "../../Dataset/Collection/"
 log_loc = "../../Dataset/log_PILOT2.txt"
 prefix = "GSV_PILOT_"
 # coordinates
@@ -134,5 +136,25 @@ def start_defined_crawling():
     logfile.close()
     input_file.close()
 
+def crawl_mass(step_lat, step_long, lat_from, lat_to, long_from,long_to):
+    for lat in np.arange(lat_from, lat_to, step_lat):
+        for long in np.arange(long_from, long_to, step_long):
+            if image_valid(lat, long):
+                location = str(lat) + ";" + str(long)
+                heading = 0
+
+                for k in range(0, 4):
+                    head = (heading + 90 * k) % 360
+                    imname = "GSV_"+str(lat) + "_" + str(long)+"_"+str(head)+".jpg"
+                    filename = mass_loc + imname
+                    download_image(lat, long, head, filename)
+                    print(filename+" downloaded..")
+
+
+
+
 #start_crawling()
-start_defined_crawling()
+#start_defined_crawling()
+crawl_mass(0.003,0.003, 52.371, max_lat, min_long,max_long)
+
+crawl_mass(0.003,0.003, 52.407, max_lat, min_long,max_long)

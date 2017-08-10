@@ -46,7 +46,7 @@ from PIL import Image
 from keras.wrappers.scikit_learn import KerasClassifier
 import math
 
-def create_basic_model():
+def create_feature_extractor(weight_file='../../CNN/PredefinedModels/vgg_places_keras.h5'):
     input_shape = (3,224,224)
     img_input = Input(shape=input_shape)
 
@@ -80,21 +80,89 @@ def create_basic_model():
 
     # Classification block
     x = Flatten(name='flatten')(x)
-    x = Dense(4096, activation='relu', name='fc6', trainable=False)(x)
-    x = Dropout(0.5, name="dropout_1")(x)
-    x = Dense(4096, activation='relu', name='fc7', trainable=True)(x)
-    x = Dropout(0.5, name="dropout_2")(x)
-    x = Dense(205, activation='softmax', name='fc8')(x)
-
     inputs = img_input
 
-    # Create model.
-    model = Model(inputs, x, name='vgg16')
+    # Create model
+    model = Model(inputs, x, name='extractor')
+    model.compile(loss='binary_crossentropy',optimizer="SGD")
+
+    #Load weight
+    model.load_weights(weight_file,by_name=True)
+
+    return model
+
+def create_predictor(droprate1 = 0,droprate2 = 0, weight_file='../../CNN/PredefinedModels/vgg_places_keras.h5'):
+    input_shape = (25088,)
+    feat_input = Input(shape=input_shape)
+
+    x = Dense(4096, activation='relu', name='fc6', trainable=False)(feat_input)
+    x = Dropout(droprate1, name="dropout_1")(x)
+    x = Dense(4096, activation='relu', name='fc7', trainable=True)(x)
+    x = Dropout(droprate2, name="dropout_2")(x)
+    x = Dense(4, activation='sigmoid', name='predictor', trainable=True)(x)
+
+    # Create model
+    model = Model(feat_input, x, name='predictor')
+
+    model.compile(loss='binary_crossentropy',
+                  optimizer="SGD",
+                  # metrics=[class_accuracy]
+                  metrics=[]
+                  )
+
+    # Load weight
+    model.load_weights(weight_file, by_name=True)
+
     return model
 
 
-def load_PLACES_weight(model,weights_path):
-    model.load_weights(weights_path)
+def extract_features(X,extractor= create_feature_extractor(),out_file="CNNModels/features.csv", use_generator=False, epoch=5):
+
+    if use_generator:
+        train_datagen = ImageDataGenerator(
+            shear_range=0.2,
+            channel_shift_range=0.2,
+            horizontal_flip=True)
+
+        train_generator = train_datagen.flow(
+            X,
+            batch_size=10
+        )
+
+        feats = extractor.predict_generator(train_generator,steps=1)
+    else:
+        feats = extractor.predict(X)
+
+
+    if (out_file):
+        np.savetxt(out_file,feats)
+
+    return feats
+
+def train_predictor(model,F_train,Y_train,F_val,Y_val,epochs = 5,batch_size = 10,lr=0.01,decay=0.00001,callbacks_list=[]):
+
+    nb_train_samples = F_train.shape[0]
+    nb_validation_samples = F_val.shape[0]
+
+    optim = keras.optimizers.SGD(lr=lr, momentum=0.9, decay=decay, nesterov=True);
+
+    model.compile(loss='binary_crossentropy',
+                  optimizer=optim,
+                  # metrics=[class_accuracy]
+                  metrics=[]
+                  )
+
+    for ep in range(1,epochs+1):
+        model.fit(
+            x=F_train,
+            y=Y_train,
+            batch_size=batch_size,
+            epochs=1,
+            callbacks=callbacks_list,
+            validation_data= (F_val,Y_val),
+            shuffle=True
+        )
+
     return model
 
 def preprocess_image(x):
@@ -274,8 +342,7 @@ def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[]):
 
 def start_model():
     WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
-    model = create_basic_model()
-    model = load_PLACES_weight(model, WEIGHTS_PATH)
+    model = create_predictor()
 
     last = model.layers[-2].output
     #x = Dense(4096, activation='relu', name='fc7new', trainable=True)(last)
@@ -322,81 +389,6 @@ def get_evaluation(Y_pred,Y_true):
     rmse = math.sqrt(sum_error/float(n))
     return [accuracy, rmse]
 
-def convert_weight(h5_file = '../../CNN/PredefinedModels/vgg_places.h5',out_file = '../../CNN/PredefinedModels/vgg_places_keras.h5'):
-    res = h5py.File(out_file,'r+')
-    f = h5py.File(h5_file,'r')
-    ff = f[u'data'].values()
-    at = np.array(f.keys()).astype("|S12")
-    for dat in ff:
-        for dts in dat.values():
-            nm = dts.name.split("/")[2]
-            idx = dts.name.split("/")[3]
-            dtsname = "/" + nm + "/" + nm+"/"
-            if(idx=="0"):
-                dtsname = dtsname +"kernel:0"
-            elif(idx=="1"):
-                dtsname = dtsname +"bias:0"
-            print (dts.name+" => "+dtsname)
-            del res[dtsname]
-            res[dtsname] = dts.value.transpose()
-    res.close()
-    return res
-
-def get_places_ref(ref_path = '../../CNN/PredefinedModels/categoryIndex_places205.csv'):
-    df_cat = pd.read_csv(ref_path,delimiter=" ")
-    res = {}
-    for idx,row in df_cat.iterrows():
-        ctg = row["category"].split("/")[2]
-        res[str(row["id"])] = ctg
-    return res
-
-def decode_scene(preds,reff=get_places_ref()):
-    sorted = np.flipud(preds.argsort())
-    for i in range(0,5):
-        ct = sorted[i]
-        print("["+str(preds[ct])+"] "+reff[str(ct)])
-
-
-def classify_scene(model,img_path):
-    img = image.load_img(img_path, target_size=(224, 224))
-    x = image.img_to_array(img)
-    x = preprocess_image(x)
-    x = np.expand_dims(x, axis=0)
-    preds = model.predict(x)[0]
-    decode_scene(preds)
-    return preds
-
-def predict_scenes():
-    path = "../Website/crowdsourcing/public/images/"
-    ref = "CrowdData/pilot_aggregates_part1.csv"
-    dat = pd.read_csv(ref)
-    reff = get_places_ref()
-    [X,Y] = load_dataset(path, ref)
-    X = preprocess_dataset(X)
-
-    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
-    model = create_basic_model()
-    model = load_PLACES_weight(model, WEIGHTS_PATH)
-
-    preds = model.predict(X)
-
-    df_scene = pd.DataFrame(
-        columns=["img_id", "scene1", "scene2", "scene3", "scene4", "scene5"])
-
-    for i in range(0,preds.shape[0]):
-        scene = {}
-        pred_i = preds[i]
-        scene["img_id"] = dat["img_id"][i]
-        sorted = np.flip(pred_i.argsort(), 0)
-        for j in range(1, 6):
-            ct = sorted[j-1]
-            scene["scene"+str(j)] = "'"+reff[str(ct)]+"'"
-        df_scene = df_scene.append(scene, ignore_index=True)
-
-        df_scene["img_id"] = df_scene["img_id"].astype(int)
-    df_scene.to_csv("Data/SceneFeatures.csv")
-
-
 def crop_im224(Xbig,xx,yy):
     img = image.array_to_img(Xbig)
     cropped = img.crop((xx,yy,xx+224,yy+224))
@@ -431,8 +423,6 @@ def get_crops(X,Y):
     X_crop = np.array(X_crop)
     Y_crop = np.array(Y_crop)
     return [X_crop, Y_crop]
-
-
 
 def experiment(name):
     path = "../Website/crowdsourcing/public/images/"
@@ -520,49 +510,6 @@ def run_training(name):
 
     #save_model(model,"../../CNN/Models/"+name+".json","../../CNN/Models/"+name+".h5")
 
-def test_scene_prediction():
-    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
-    model = create_basic_model()
-
-    model = load_PLACES_weight(model, WEIGHTS_PATH)
-
-    img_path = '../Website/crowdsourcing/public/images/PILOT/GSV_PILOT_2_2.jpg'
-    reff = get_places_ref()
-    tes = classify_scene(model,reff,img_path)
-    return model
-
-
-def tesTrial():
-    model = load_model("../../CNN/Models/trial_naif.json", "../../CNN/Models/trial_naif.h5")
-
-    path="../Website/crowdsourcing/public/images/"
-    ref="CrowdData/pilot_aggregates_part1.csv"
-    [X,Y] = load_dataset(path,ref,224)
-    X = preprocess_dataset(X)
-    X_tes = X[0:10]
-    Y_tes = Y[0:10]
-    preds = model.predict(X_tes, batch_size=10)
-
-    return [model,X,Y,X_tes,Y_tes,preds]
-
-def tes_training_work():
-    path = "../Website/crowdsourcing/public/images/"
-    ref = "CrowdData/pilot_aggregates_part1.csv"
-    [X, Y] = load_dataset(path, ref)
-    X = preprocess_dataset(X)
-
-    X_train = X[0:4]
-    Y_train = Y[0:4]
-    Y_train[0] = np.array([1,1,0,0])
-    Y_train[1] = np.array([0, 1, 1, 0])
-    Y_train[2] = np.array([0, 0, 1, 1])
-    Y_train[3] = np.array([0, 0, 0, 1])
-
-    model = start_model()
-    model = train_model(model, X_train, Y_train, X_train, Y_train)
-
-    save_model(model, "../../CNN/Models/overfit2.json", "../../CNN/Models/overfit2.h5")
-
 def collect_log(logname, modelfiles = []):
     path = "../Website/crowdsourcing/public/images/"
     ref = "CrowdData/pilot_aggregates_part1.csv"
@@ -598,15 +545,3 @@ def collect_log(logname, modelfiles = []):
         df_log = df_log.append(newlog, ignore_index=True)
     df_log.to_csv(logname, sep=",")
 
-
-
-#run_training("basic1")
-#tes_training_work()
-
-#run_gridsearch("getsize")
-
-#[model,X,Y,X_tes,Y_tes,preds] = tesTrial()
-#test_prediction()
-#predict_scenes()
-#experiment("basic_ori")
-#collect_log("current_log.txt")

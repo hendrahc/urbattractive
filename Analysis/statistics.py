@@ -252,7 +252,7 @@ def get_attr_function(df):
 
 def factor_loading(df):
     fa = FactorAnalysis(n_components=2)
-    fa.fit(df[["attractiveness", "familiarity", "uniqueness", "friendliness", "pleasure", "arousal", "dominance"]])
+    fa.fit(df[["familiarity", "uniqueness", "friendliness", "pleasure", "arousal", "dominance"]],df["attractiveness"])
     fa.components_
 
 '''
