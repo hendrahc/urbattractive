@@ -91,15 +91,18 @@ def create_feature_extractor(weight_file='../../CNN/PredefinedModels/vgg_places_
 
     return model
 
-def create_predictor(droprate1 = 0,droprate2 = 0, weight_file='../../CNN/PredefinedModels/vgg_places_keras.h5'):
+def create_predictor(droprate1 = 0,droprate2 = 0, vgg=False, weight_file='../../CNN/PredefinedModels/vgg_places_keras.h5'):
     input_shape = (25088,)
     feat_input = Input(shape=input_shape)
 
-    x = Dense(4096, activation='relu', name='fc6', trainable=False)(feat_input)
+    x = Dense(4096, activation='relu', name='fc6', trainable=True)(feat_input)
     x = Dropout(droprate1, name="dropout_1")(x)
     x = Dense(4096, activation='relu', name='fc7', trainable=True)(x)
     x = Dropout(droprate2, name="dropout_2")(x)
-    x = Dense(4, activation='sigmoid', name='predictor', trainable=True)(x)
+    if (vgg) :
+        x = Dense(205, activation='softmax', name='fc8')(x)
+    else:
+        x = Dense(4, activation='sigmoid', name='predictor', trainable=True)(x)
 
     # Create model
     model = Model(feat_input, x, name='predictor')
@@ -205,13 +208,12 @@ def read_img(img_file):
     x = image.img_to_array(img)
     return x
 
-def load_dataset(path,ref_file, val_list, width):
+def load_dataset(path,ref_file, width, vals = []):
     ref = pd.read_csv(ref_file)
     X_train = []
     Y_train = []
     X_val = []
     Y_val = []
-    vals = pd.read_csv(val_list)["img_id"].values.tolist()
     for index,row in ref.iterrows():
         filename = path + row["img_path"]
         img_id = row["img_id"]
@@ -358,6 +360,20 @@ def testModel(model,X_val,Y_val):
     print("accuracy = "+str(accuracy))
     return preds
 
+def get_places_ref(ref_path = '../../CNN/PredefinedModels/categoryIndex_places205.csv'):
+    df_cat = pd.read_csv(ref_path,delimiter=" ")
+    res = {}
+    for idx,row in df_cat.iterrows():
+        ctg = row["category"].split("/")[2]
+        res[str(row["id"])] = ctg
+    return res
+
+def decode_scene(preds,reff=get_places_ref()):
+    sorted = np.flipud(preds.argsort())
+    for i in range(0,5):
+        ct = sorted[i]
+        print("["+str(preds[ct])+"] "+reff[str(ct)])
+
 def decode_class(bins):
     if(bins[0]==0):
         return 1
@@ -424,33 +440,6 @@ def get_crops(X,Y):
     Y_crop = np.array(Y_crop)
     return [X_crop, Y_crop]
 
-def experiment(name):
-    path = "../Website/crowdsourcing/public/images/"
-    ref = "CrowdData/pilot_aggregates_part1.csv"
-    [X,Y] = load_dataset(path, ref,224)
-    X = preprocess_dataset(X)
-
-    # split for training and validation
-    n = X.shape[0]
-    n_fold = 5
-    fold_size = int(n/n_fold)
-
-    for fold in range(0,n_fold):
-        forval = [i for i in range(fold*fold_size, (fold+1)*fold_size)]
-        fortrain = [i for i in range(0, n) if i not in forval]
-        X_train = X[fortrain]
-        Y_train = Y[fortrain]
-        X_val = X[forval]
-        Y_val = Y[forval]
-
-        model = start_model()
-        print('Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
-        print("Training Fold "+str(fold))
-        model = train_model(model, X_train, Y_train, X_val, Y_val)
-        print("Training Fold " + str(fold)+" done..")
-        save_model(model, "../../CNN/Models/" + name + ".json", "../../CNN/Models/" + name + "_"+str(fold+1)+".h5")
-
-
 def convert_to_binary(pred):
     res = np.zeros(pred.shape).astype(int)
     res[pred>0.5] = 1
@@ -477,8 +466,9 @@ def run_training(name):
     path="../Website/crowdsourcing/public/images/"
     ref="CrowdData/pilot_aggregates_part1.csv"
     val_list = "CrowdData/val_list.csv"
-    [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 224)
-    #[X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 400)
+    vals = pd.read_csv(val_list)["img_id"].values.tolist()
+    [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, 224, vals)
+    #[X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, 400, vals)
 
     X_train = preprocess_dataset(X_train)
     X_val = preprocess_dataset(X_val)
@@ -515,7 +505,8 @@ def collect_log(logname, modelfiles = []):
     ref = "CrowdData/pilot_aggregates_part1.csv"
 
     val_list = "CrowdData/val_list.csv"
-    [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 224)
+    vals = pd.read_csv(val_list)["img_id"].values.tolist()
+    [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, 224, vals)
 
     X_train = preprocess_dataset(X_train)
     X_val = preprocess_dataset(X_val)
@@ -545,3 +536,38 @@ def collect_log(logname, modelfiles = []):
         df_log = df_log.append(newlog, ignore_index=True)
     df_log.to_csv(logname, sep=",")
 
+def prepare_feats(F_loc = ""):
+    path = "../Website/crowdsourcing/public/images/"
+    ref = "CrowdData/pilot_aggregates_part1.csv"
+    def_F_loc = "../../FEATS/F_all.txt"
+
+    if(F_loc == ""):
+        [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, 224)
+        X_train = preprocess_dataset(X_train)
+        extractor = create_feature_extractor()
+        F_all = extractor.predict(X_train)
+        F_loc = def_F_loc
+        np.savetxt(F_loc)
+
+    F_all = np.loadtxt(F_loc)
+    val_list = "CrowdData/val_list.csv"
+    vals = pd.read_csv(val_list)["img_id"].values.tolist()
+
+    df_ref = pd.read_csv(ref)
+
+    train_idx = df_ref[~df_ref["img_id"].isin(vals)].index.values
+    val_idx = df_ref[df_ref["img_id"].isin(vals)].index.values
+
+    F_train = F_all[train_idx]
+    F_val = F_all[val_idx]
+
+    np.savetxt("../../FEATS/F_train.txt",F_train)
+    np.savetxt("../../FEATS/F_val.txt", F_val)
+
+
+
+
+def run():
+    prepare_feats(F_loc="../../FEATS/F_all.txt")
+
+#run()
