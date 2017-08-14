@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="dcc3337b-3a5a-4d53-9bfc-ee5585fc771a" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/attr_funct.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/attr_funct.xlsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1_analysis.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2_analysis.xlsx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/val_list.csv" afterPath="$PROJECT_DIR$/Analysis/CrowdData/val_list.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/experiment.py" afterPath="$PROJECT_DIR$/Analysis/experiment.py" />
@@ -42,8 +42,8 @@
       <file leaf-file-name="image_classifier.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="140" column="31" selection-start-line="140" selection-start-column="4" selection-end-line="140" selection-end-column="31" />
+            <state relative-caret-position="-5">
+              <caret line="255" column="4" selection-start-line="255" selection-start-column="4" selection-end-line="258" selection-end-column="5" />
               <folding>
                 <element signature="e#91#100#0" expanded="true" />
               </folding>
@@ -54,8 +54,8 @@
       <file leaf-file-name="experiment.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Analysis/experiment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="551" column="29" selection-start-line="551" selection-start-column="29" selection-end-line="551" selection-end-column="29" />
+            <state relative-caret-position="174">
+              <caret line="667" column="10" selection-start-line="667" selection-start-column="10" selection-end-line="667" selection-end-column="10" />
               <folding>
                 <element signature="e#91#100#0" expanded="true" />
               </folding>
@@ -808,9 +808,9 @@
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19692533" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41324922" sideWeight="0.34919474" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36750787" sideWeight="0.43265006" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41324922" sideWeight="0.6508053" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36750787" sideWeight="0.5673499" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32870865" sideWeight="0.5653876" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1104,8 +1104,8 @@
     <entry file="file://$PROJECT_DIR$/Analysis/test1.png" />
     <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="140" column="31" selection-start-line="140" selection-start-column="4" selection-end-line="140" selection-end-column="31" />
+        <state relative-caret-position="-5">
+          <caret line="255" column="4" selection-start-line="255" selection-start-column="4" selection-end-line="258" selection-end-column="5" />
           <folding>
             <element signature="e#91#100#0" expanded="true" />
           </folding>
@@ -1114,8 +1114,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Analysis/experiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="551" column="29" selection-start-line="551" selection-start-column="29" selection-end-line="551" selection-end-column="29" />
+        <state relative-caret-position="174">
+          <caret line="667" column="10" selection-start-line="667" selection-start-column="10" selection-end-line="667" selection-end-column="10" />
           <folding>
             <element signature="e#91#100#0" expanded="true" />
           </folding>

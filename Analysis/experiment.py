@@ -155,16 +155,15 @@ def train_predictor(model,F_train,Y_train,F_val,Y_val,epochs = 5,batch_size = 10
                   metrics=[]
                   )
 
-    for ep in range(1,epochs+1):
-        model.fit(
-            x=F_train,
-            y=Y_train,
-            batch_size=batch_size,
-            epochs=1,
-            callbacks=callbacks_list,
-            validation_data= (F_val,Y_val),
-            shuffle=True
-        )
+    model.fit(
+        x=F_train,
+        y=Y_train,
+        batch_size=batch_size,
+        epochs=epochs,
+        callbacks=callbacks_list,
+        validation_data= (F_val,Y_val),
+        shuffle=True
+    )
 
     return model
 
@@ -536,7 +535,28 @@ def collect_log(logname, modelfiles = []):
         df_log = df_log.append(newlog, ignore_index=True)
     df_log.to_csv(logname, sep=",")
 
-def prepare_feats(F_loc = ""):
+def encode_labels(Yint):
+    Yout = []
+    for cls in Yint:
+        y = []
+        if cls==1:
+            y = [0, 0, 0, 0]
+        elif cls == 2:
+            y = [1, 0, 0, 0]
+        elif cls == 3:
+            y = [1, 1, 0, 0]
+        elif cls == 4:
+            y = [1, 1, 1, 0]
+        elif cls == 5:
+            y = [1, 1, 1, 1]
+        else:
+            y = [1, 1, 0, 0]
+        Yout.append(y)
+    Yout = np.array(Yout)
+    return Yout
+
+
+def prepare_feats(F_loc = "",prepare_generator=False):
     path = "../Website/crowdsourcing/public/images/"
     ref = "CrowdData/pilot_aggregates_part1.csv"
     def_F_loc = "../../FEATS/F_all.txt"
@@ -564,10 +584,89 @@ def prepare_feats(F_loc = ""):
     np.savetxt("../../FEATS/F_train.txt",F_train)
     np.savetxt("../../FEATS/F_val.txt", F_val)
 
+    if(prepare_generator):
+        [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, 224)
+        X_train = preprocess_dataset(X_train)
+        X_train = X_train[train_idx]
+        Y_train = Y_train[train_idx]
+        extractor = create_feature_extractor()
+        for ep in range(1,11):
+            train_datagen = ImageDataGenerator(
+                shear_range=0.2,
+                channel_shift_range=0.2,
+                horizontal_flip=True)
 
+            train_generator = train_datagen.flow(
+                X_train, Y_train,
+                batch_size=1
+            )
+
+            F_train_i = extractor.predict_generator(train_generator,steps=1)
+            np.savetxt("../../FEATS/F_train_"+ep+".txt", F_train_i)
+
+
+
+
+def gridsearch(name="test",batch_size_list = [10],decay_list=[0], do1_list=[0],do2_list=[0]):
+    ref = "CrowdData/pilot_aggregates_part1.csv"
+    F_train_loc = "../../FEATS/F_train.txt"
+    F_val_loc = "../../FEATS/F_val.txt"
+
+    val_list = "CrowdData/val_list.csv"
+    vals = pd.read_csv(val_list)["img_id"].values.tolist()
+
+    df_ref = pd.read_csv(ref)
+    train_idx = df_ref[~df_ref["img_id"].isin(vals)].index.values
+    val_idx = df_ref[df_ref["img_id"].isin(vals)].index.values
+
+    Y_train = encode_labels(df_ref["median"][train_idx])
+    Y_val = encode_labels(df_ref["median"][val_idx])
+
+    F_train = np.loadtxt(F_train_loc)
+    F_val = np.loadtxt(F_val_loc)
+
+    best_rmse = 99
+    logf = open("MODELS/log"+name+".txt", 'w')
+    logf.write("timestamp,name,batch_size,LR,dropout1,dropout2,epoch,acc_train,acc_val,rmse_train,rmse_val\n")
+    logf.flush()
+
+    for batch_size in batch_size_list:
+        for lr in [0.01,0.001]:
+            for drop1 in do1_list:
+                for drop2 in do2_list:
+                    predictor = create_predictor(droprate1=drop1,droprate2=drop2)
+                    force_stop = False
+                    for epoch in range(1,11):
+                        if(~force_stop):
+                            predictor = train_predictor(predictor,F_train,Y_train,F_val,Y_val,lr=lr,batch_size=batch_size,decay=0,epochs=1)
+
+                            Y__train_pred = predictor.predict(F_train)
+                            [acc_train, rmse_train] = get_evaluation(Y__train_pred, Y_train)
+
+                            Y__val_pred = predictor.predict(F_val)
+                            [acc_val,rmse_val] = get_evaluation(Y__val_pred,Y_val)
+
+                            wfile = "MODELS/" + name + "_batchsize_" + str(batch_size) + "_decay_" + str(
+                                lr) + "_drop_" + str(drop1) + "_" + str(drop2) + "_epoch_" + str(epoch) + "_err_" + str(
+                                round(rmse_train, 2)) + "_" + str(round(rmse_val, 2)) + ".h5"
+                            if (rmse_val <= best_rmse):
+                                save_model(predictor, "MODELS/mymodel.json", wfile)
+                                best_rmse = rmse_val
+
+                            if(rmse_train <0.3):
+                                force_stop = True
+
+                        log = str(datetime.datetime.now())+","+name+","+str(batch_size)+","+str(lr)+","+str(drop1)+","+str(drop2)+","+str(epoch)+","+str(round(acc_train,2))+","+str(round(acc_val,2))+","+str(round(rmse_train,2))+","+str(round(rmse_val,2))+"\n"
+                        logf.write(log)
+                        logf.flush()
+                        print(log)
+
+
+    logf.close()
 
 
 def run():
-    prepare_feats(F_loc="../../FEATS/F_all.txt")
+    prepare_feats(F_loc="../../FEATS/F_all.txt",prepare_generator=True)
+    #gridsearch(name="dropout3",batch_size_list=[10],do1_list=[0.5],do2_list=[0.2])
 
-#run()
+run()
