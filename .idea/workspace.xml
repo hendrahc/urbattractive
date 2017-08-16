@@ -2,11 +2,29 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dcc3337b-3a5a-4d53-9bfc-ee5585fc771a" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/BCK/PILOT.sqlite3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/BCK/pilot_aggregates_part1.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/BCK/pilot_aggregates_part2.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/BCK/pilot_judgements.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/BCK/summary_ori.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/agg1.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/agg_data.sav" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/attr_exp_view.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/corrmat.csv" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Analysis/CrowdData/indiv_data.sav" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/attr_funct.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/attr_funct.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1_analysis.xlsx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2_analysis.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_judgements_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_judgements_analysis.xlsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/users_analysis.xlsx" afterPath="$PROJECT_DIR$/Analysis/CrowdData/users_analysis.xlsx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1.csv" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part1.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2.csv" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_aggregates_part2.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/pilot_judgements.csv" afterPath="$PROJECT_DIR$/Analysis/CrowdData/pilot_judgements.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/summary_ori.csv" afterPath="$PROJECT_DIR$/Analysis/CrowdData/summary_ori.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/CrowdData/val_list.csv" afterPath="$PROJECT_DIR$/Analysis/CrowdData/val_list.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/experiment.py" afterPath="$PROJECT_DIR$/Analysis/experiment.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Analysis/statistics.py" afterPath="$PROJECT_DIR$/Analysis/statistics.py" />
     </list>
     <ignored path="urbattractive.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -42,7 +60,7 @@
       <file leaf-file-name="image_classifier.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5">
+            <state relative-caret-position="3672">
               <caret line="255" column="4" selection-start-line="255" selection-start-column="4" selection-end-line="258" selection-end-column="5" />
               <folding>
                 <element signature="e#91#100#0" expanded="true" />
@@ -54,8 +72,8 @@
       <file leaf-file-name="experiment.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Analysis/experiment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="667" column="10" selection-start-line="667" selection-start-column="10" selection-end-line="667" selection-end-column="10" />
+            <state relative-caret-position="271">
+              <caret line="623" column="43" selection-start-line="623" selection-start-column="43" selection-end-line="623" selection-end-column="43" />
               <folding>
                 <element signature="e#91#100#0" expanded="true" />
               </folding>
@@ -82,16 +100,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="attr_exp_view.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Analysis/CrowdData/attr_exp_view.csv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="test_imclass.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analysis/testKeras/test_imclass.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -105,20 +113,8 @@
       <file leaf-file-name="scene_analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analysis/scene_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
-              <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="52" selection-end-column="32" />
-              <folding>
-                <element signature="e#39#58#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="statistics.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Analysis/statistics.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2516">
-              <caret line="156" column="36" selection-start-line="156" selection-start-column="36" selection-end-line="156" selection-end-column="36" />
+            <state relative-caret-position="595">
+              <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
               <folding>
                 <element signature="e#39#58#0" expanded="true" />
               </folding>
@@ -177,9 +173,9 @@
         <option value="$PROJECT_DIR$/Analysis/scene_analysis.py" />
         <option value="$PROJECT_DIR$/Analysis/Data/val_img.csv" />
         <option value="$PROJECT_DIR$/Analysis/dataset_expansion.py" />
-        <option value="$PROJECT_DIR$/Analysis/statistics.py" />
         <option value="$PROJECT_DIR$/Image Crawler/crawl_image.py" />
         <option value="$PROJECT_DIR$/Analysis/image_classifier.py" />
+        <option value="$PROJECT_DIR$/Analysis/statistics.py" />
         <option value="$PROJECT_DIR$/Analysis/experiment.py" />
       </list>
     </option>
@@ -240,8 +236,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -450,6 +444,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -803,20 +799,18 @@
     <option name="totallyTimeSpent" value="30000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19692533" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36750787" sideWeight="0.43265006" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36750787" sideWeight="0.43557832" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36750787" sideWeight="0.5673499" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36750787" sideWeight="0.56442165" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32870865" sideWeight="0.5653876" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -826,10 +820,12 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32870865" sideWeight="0.5653876" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329653" sideWeight="0.49121523" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1026,14 +1022,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Analysis/CrowdData/attr_exp_view.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Analysis/CrowdData/attr_exp_view.csv" />
     <entry file="file://$PROJECT_DIR$/Analysis/dataset_expansion.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1394">
@@ -1065,26 +1054,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Analysis/scene_analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="850">
-          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="52" selection-end-column="32" />
-          <folding>
-            <element signature="e#39#58#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Analysis/statistics.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2516">
-          <caret line="156" column="36" selection-start-line="156" selection-start-column="36" selection-end-line="156" selection-end-column="36" />
-          <folding>
-            <element signature="e#39#58#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Image Crawler/crawl_image.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2618">
@@ -1104,7 +1073,7 @@
     <entry file="file://$PROJECT_DIR$/Analysis/test1.png" />
     <entry file="file://$PROJECT_DIR$/Analysis/image_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5">
+        <state relative-caret-position="3672">
           <caret line="255" column="4" selection-start-line="255" selection-start-column="4" selection-end-line="258" selection-end-column="5" />
           <folding>
             <element signature="e#91#100#0" expanded="true" />
@@ -1112,10 +1081,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Analysis/statistics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="159" column="35" selection-start-line="159" selection-start-column="35" selection-end-line="159" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Analysis/scene_analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding>
+            <element signature="e#39#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Analysis/experiment.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="667" column="10" selection-start-line="667" selection-start-column="10" selection-end-line="667" selection-end-column="10" />
+        <state relative-caret-position="271">
+          <caret line="623" column="43" selection-start-line="623" selection-start-column="43" selection-end-line="623" selection-end-column="43" />
           <folding>
             <element signature="e#91#100#0" expanded="true" />
           </folding>

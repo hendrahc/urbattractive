@@ -40,7 +40,7 @@ def read_data(inp):
     df = pd.read_csv(inp)
     df = normalize(df)
 
-    df_clean =  df[df["user_id"] >= 17]
+    df_clean =  df
     df_part1 = df_clean[df["part"].isin([0,1])]
     df_part2 = df_clean[df["part"]==2]
     return [df,df_part1,df_part2]
@@ -358,3 +358,5 @@ def activities():
 
     df_summary = summarize_data(df_aggr_part1, df_aggr_part2, loc_im)
     save_df(df_summary,summary_filename)
+
+    df_aggr1 = aggregate_attribute_part1(df,df_img)

@@ -1,0 +1,51 @@
+campaign_set,id,name,email,gender,age,nationality,start,end
+3,14,Pavel Kucherbaev,pavel.kucherbaev@gmail.com,M,30,Russian,2017-03-26 23:10:15.000000,2017-03-26 23:52:07.000000
+3,15,Jie Yang,j.yang-3@tudelft.nl,M,27,Chinese,2017-03-26 23:10:30.000000,2017-03-27 00:01:26.000000
+3,16,Achilleas Psyllidis,A.Psyllidis@tudelft.nl,M,33,Greek,2017-03-26 23:10:38.000000,2017-03-26 23:48:02.000000
+3,17,dwi sasetyaningtyas,sasetyaningtyas@gmail.com,F,23,Indonesian,2017-03-27 00:27:26.000000,2017-03-27 01:12:56.000000
+2,22,Septian Gilang Permana Putra,septiangilang92@gmail.com,M,25,Indonesian,2017-03-28 10:05:53.000000,2017-03-27 23:21:18.000000
+1,25,Qiaoqiao Li,q.li-5@student.tudelft.nl,F,23,Chinese,2017-03-28 03:13:08.000000,2017-03-28 03:46:14.000000
+5,30,Arkka Dhiratara,ArkkaDhiratara@student.tudelft.nl,M,28,Indonesian,2017-03-28 23:29:55.000000,2017-03-29 00:26:46.000000
+5,31,Sindunuraga R. P.,sindunuragarp@gmail.com,M,23,Indonesian,2017-03-28 23:33:26.000000,2017-03-29 00:27:14.000000
+5,32,Shashank Prasad Rao,s.p.rao@student.tudelft.nl,M,25,Indian,2017-03-28 23:33:49.000000,2017-03-29 00:23:27.000000
+5,33,Bramka Arga Jafino,bramkaarga@gmail.com,M,23,Indonesian,2017-03-28 23:35:23.000000,2017-03-29 00:27:29.000000
+6,35,Muhammad Ridho Rosa,muhammadridhorosa@gmail.com,M,26,Indonesian,2017-03-28 23:46:16.000000,2017-03-29 00:27:59.000000
+5,36,helmiriawan,helmiriawan@student.tudelft.nl,M,26,Indonesian,2017-03-28 23:47:26.000000,2017-03-29 00:44:58.000000
+6,37,Ishan Ghanmode,ishanghanmode@outlook.com,M,24,Indian,2017-03-29 00:48:43.000000,2017-03-29 01:31:22.000000
+6,38,Mohamat Ulin Nuha,MohamatUlinNuha@student.tudelft.nl,M,27,Indonesian,2017-03-29 00:49:00.000000,2017-03-29 01:22:59.000000
+1,39,Conrad Brown,conrad.brown42@gmail.com,M,28,British,2017-03-29 01:57:07.000000,
+1,40,Anindito Kusumojati,anindito.kusumojati@gmail.com,M,26,Indonesian,2017-03-29 01:57:35.000000,2017-03-29 02:53:17.000000
+1,41,T Arsyida,t.tutyarsyida@student.tudelft.nl,F,29,Indonesian,2017-03-29 01:57:55.000000,2017-03-29 02:53:59.000000
+2,42,Bontor Humala,BontorHumala@student.tudelft.nl,M,27,Indonesian,2017-03-29 03:14:30.000000,2017-03-29 03:58:31.000000
+2,43,Rucha Bapat,r.m.bapat@student.tudelft.nl,F,25,Indian,2017-03-29 03:14:44.000000,2017-03-29 03:48:05.000000
+2,44,William Suriana,william.suriana@gmail.com,M,24,Indonesian,2017-03-29 03:15:51.000000,2017-03-29 04:29:14.000000
+2,45,Aditi Rawat,A.rawat@student.tudelft.nl,F,24,Indian,2017-03-29 03:17:01.000000,2017-03-29 04:02:10.000000
+6,47,Insani Abdi Bangsa,insaniabdi@gmail.com,M,23,Indonesian,2017-03-30 08:54:22.000000,2017-03-30 09:57:59.000000
+6,48,Dimas Ramadhan Abdillah Fikri,DimasRamadhanAbdillahFikri@student.tudelft.nl,M,25,Indonesian,2017-03-30 08:57:38.000000,2017-03-30 09:48:55.000000
+4,49,Andreas Maruli Christian Pangaribuan,andreas.mc.pangaribuan@gmail.com,M,17,Indonesian,2017-03-30 10:08:04.000000,2017-03-30 10:51:05.000000
+4,50,Reza Aditya Permadi,r.a.permadi@student.tudelft.nl,M,29,Indonesian,2017-03-30 10:07:53.000000,2017-03-30 10:56:15.000000
+4,51,Muhamad Zamroni,zamroni.ep07@gmail.com,M,27,Indonesian,2017-03-30 10:09:36.000000,2017-03-30 10:53:23.000000
+4,52,Romi Kharisnawan,romikharisnawan@gmail.com,M,26,Indonesian,2017-03-30 10:43:09.000000,2017-03-29 23:17:07.000000
+7,53,Vasileios Milias,milias.vasilis@gmail.com,M,24,Greek,2017-03-30 02:03:53.000000,2017-03-30 02:54:45.000000
+7,54,Affan Kaysa Waafi,affankaysawaafi@student.tudelft.nl,M,25,Indonesian,2017-03-30 02:05:05.000000,2017-03-30 02:50:01.000000
+7,55,Adrian Promediaz,AdrianPromediaz@student.tudelft.nl,M,26,Indonesian,2017-03-30 02:05:00.000000,2017-03-30 03:02:03.000000
+7,56,Sambit Praharaj,sambit_praharaj@yahoo.com,M,23,Indian,2017-03-30 03:22:26.000000,2017-03-30 04:33:14.000000
+7,57,Andri Rahmadhani,andrewflash@gmail.com,M,25,Indonesian,2017-03-30 03:22:56.000000,2017-03-30 04:18:29.000000
+3,58,Muhammad Faris,mhmmdfrs@gmail.com,M,25,Indonesian,2017-03-30 03:31:43.000000,2017-03-30 04:30:44.000000
+4,59,Atindriyo Kusumo Pamososuryo,atindriyo.kp@gmail.com,M,25,Indonesian,2017-03-31 01:59:08.000000,2017-03-31 02:34:05.000000
+1,60,Nadia Rayhanna,nrayhanna@gmail.com,F,26,Indonesian,2017-03-31 01:55:58.000000,2017-03-31 02:54:04.000000
+10,62,Dimas Ramadhan Abdillah Fikri,DimasRamadhanAbdillahFikri@student.tudelft.nl,M,26,Indonesian,2017-05-01 00:49:53.000000,2017-05-01 01:43:16.000000
+8,63,Prahesa Kusuma Setia,prahesakusumasetia@student.tudelft.nl,M,25,Indonesian,2017-05-02 02:27:22.000000,2017-05-02 03:27:21.000000
+8,64,Tulus,imaro.tulus@gmail.com,M,28,Indonesian,2017-05-02 04:27:04.000000,2017-05-02 05:00:46.000000
+8,65,Antony Rainer Mallianto Santosa,rainer.civil@gmail.com,M,25,Indonesian,2017-05-02 04:26:56.000000,2017-05-03 07:12:49.000000
+8,66,Andre Prakoso,andreprakoso@student.tudelft.nl,M,23,Indonesian,2017-05-02 04:42:12.000000,2017-05-02 05:29:19.000000
+8,67,Parikesit Abdi Negara,rpabdinegara@gmail.com,M,27,Indonesian,2017-05-03 09:54:59.000000,2017-05-03 10:43:03.000000
+9,68,Aulia Recky,AuliaReckySoepeno@student.tudelft.nl,M,23,Indonesian,2017-05-02 23:07:53.000000,2017-05-02 23:47:58.000000
+9,69,Rhadityo Bhaskoro Arbarim,rhadityobhaskoro@yahoo.com,M,26,Indonesian,2017-05-03 01:14:49.000000,2017-05-03 01:50:55.000000
+10,70,Yunizar Natanael Pragistio,yunizar.agis11@gmail.com,M,24,Indonesian,2017-05-04 10:55:42.000000,2017-05-03 23:36:24.000000
+9,72,mustaqim,mustaaqim@gmail.com,M,27,Indonesian,2017-05-04 02:13:48.000000,2017-05-04 02:48:50.000000
+9,73,Zahrina Hafizhah,zahrinahafizhah@gmail.com,F,23,Indonesian,2017-05-04 02:24:16.000000,2017-05-04 03:15:42.000000
+10,75,Christian Gerald Daniel,christian.geralddaniel@gmail.com,M,24,Indonesian,2017-05-09 01:03:36.000000,2017-05-09 01:50:01.000000
+10,76,Hakim Agung Ramadhan,hakimagungramadhan@gmail.com,M,28,Indonesian,2017-05-09 01:03:25.000000,2017-05-09 01:54:08.000000
+10,77,Aldy Gustinara,aldy.gustinara@gmail.com,M,27,Indonesian,2017-05-09 01:29:28.000000,2017-05-09 02:12:22.000000
+9,80,pramudya arif d,pramudyaad@gmail.com,M,26,Indonesian,2017-05-04 01:04:43.000000,2017-05-04 02:08:02.000000

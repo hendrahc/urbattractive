@@ -556,7 +556,7 @@ def encode_labels(Yint):
     return Yout
 
 
-def prepare_feats(F_loc = "",prepare_generator=False):
+def prepare_feats(F_loc = "",prepare_generator=False,with_crop = False):
     path = "../Website/crowdsourcing/public/images/"
     ref = "CrowdData/pilot_aggregates_part1.csv"
     def_F_loc = "../../FEATS/F_all.txt"
@@ -584,11 +584,13 @@ def prepare_feats(F_loc = "",prepare_generator=False):
     np.savetxt("../../FEATS/F_train.txt",F_train)
     np.savetxt("../../FEATS/F_val.txt", F_val)
 
+
+
     if(prepare_generator):
         [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, 224)
         X_train = preprocess_dataset(X_train)
         X_train = X_train[train_idx]
-        Y_train = Y_train[train_idx]
+        Y_train = F_train
         extractor = create_feature_extractor()
         for ep in range(1,11):
             train_datagen = ImageDataGenerator(
@@ -602,7 +604,7 @@ def prepare_feats(F_loc = "",prepare_generator=False):
             )
 
             F_train_i = extractor.predict_generator(train_generator,steps=1)
-            np.savetxt("../../FEATS/F_train_"+ep+".txt", F_train_i)
+            np.savetxt("../../FEATS/F_train_"+str(ep)+".txt", F_train_i)
 
 
 
@@ -626,7 +628,7 @@ def gridsearch(name="test",batch_size_list = [10],decay_list=[0], do1_list=[0],d
     F_val = np.loadtxt(F_val_loc)
 
     best_rmse = 99
-    logf = open("MODELS/log"+name+".txt", 'w')
+    logf = open("MODELS/log_"+name+".txt", 'w')
     logf.write("timestamp,name,batch_size,LR,dropout1,dropout2,epoch,acc_train,acc_val,rmse_train,rmse_val\n")
     logf.flush()
 
@@ -640,11 +642,11 @@ def gridsearch(name="test",batch_size_list = [10],decay_list=[0], do1_list=[0],d
                         if(~force_stop):
                             predictor = train_predictor(predictor,F_train,Y_train,F_val,Y_val,lr=lr,batch_size=batch_size,decay=0,epochs=1)
 
-                            Y__train_pred = predictor.predict(F_train)
-                            [acc_train, rmse_train] = get_evaluation(Y__train_pred, Y_train)
+                            Y_train_pred = predictor.predict(F_train)
+                            [acc_train, rmse_train] = get_evaluation(Y_train_pred, Y_train)
 
-                            Y__val_pred = predictor.predict(F_val)
-                            [acc_val,rmse_val] = get_evaluation(Y__val_pred,Y_val)
+                            Y_val_pred = predictor.predict(F_val)
+                            [acc_val,rmse_val] = get_evaluation(Y_val_pred,Y_val)
 
                             wfile = "MODELS/" + name + "_batchsize_" + str(batch_size) + "_decay_" + str(
                                 lr) + "_drop_" + str(drop1) + "_" + str(drop2) + "_epoch_" + str(epoch) + "_err_" + str(
@@ -660,13 +662,11 @@ def gridsearch(name="test",batch_size_list = [10],decay_list=[0], do1_list=[0],d
                         logf.write(log)
                         logf.flush()
                         print(log)
-
-
     logf.close()
 
 
 def run():
-    prepare_feats(F_loc="../../FEATS/F_all.txt",prepare_generator=True)
-    #gridsearch(name="dropout3",batch_size_list=[10],do1_list=[0.5],do2_list=[0.2])
+    #prepare_feats(F_loc="../../FEATS/F_all.txt",prepare_generator=True)
+    gridsearch(name="numbatch_lr",batch_size_list=[20,10,5,1],do1_list=[0],do2_list=[0])
 
 run()
