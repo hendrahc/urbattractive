@@ -45,8 +45,9 @@ from PIL import Image
 
 from keras.wrappers.scikit_learn import KerasClassifier
 import math
+import random
 
-def create_basic_model():
+def create_basic_model(do1, do2):
     input_shape = (3,224,224)
     img_input = Input(shape=input_shape)
 
@@ -80,10 +81,10 @@ def create_basic_model():
 
     # Classification block
     x = Flatten(name='flatten')(x)
-    x = Dense(4096, activation='relu', name='fc6', trainable=False)(x)
-    x = Dropout(0.5, name="dropout_1")(x)
+    x = Dense(4096, activation='relu', name='fc6', trainable=True)(x)
+    x = Dropout(do1, name="dropout_1")(x)
     x = Dense(4096, activation='relu', name='fc7', trainable=True)(x)
-    x = Dropout(0.5, name="dropout_2")(x)
+    x = Dropout(do2, name="dropout_2")(x)
     x = Dense(205, activation='softmax', name='fc8')(x)
 
     inputs = img_input
@@ -227,15 +228,15 @@ def class_accuracy(y_true,y_pred):
     return K.mean(K.equal(K.sum(K.abs(K.round(y_pred) - y_true),axis=-1),0))
 
 
-def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[]):
+def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[], batch_size = 20, lr = 0.01):
     # dimensions of our images.
     img_width, img_height = 224, 224
     nb_train_samples = X_train.shape[0]
     nb_validation_samples = X_val.shape[0]
-    epochs = 10
-    batch_size = 10
+    epochs = 1
+    batch_size = batch_size
 
-    optim = keras.optimizers.SGD(lr=0.01, momentum=0.9, decay=0.000001, nesterov=True);
+    optim = keras.optimizers.SGD(lr=lr, momentum=0.9, decay=0, nesterov=True);
 
     model.compile(loss='binary_crossentropy',
                   optimizer=optim,
@@ -272,9 +273,9 @@ def train_model(model,X_train,Y_train,X_val,Y_val,callbacks_list=[]):
         callbacks = callbacks_list)
     return model
 
-def start_model():
+def start_model(do1, do2):
     WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
-    model = create_basic_model()
+    model = create_basic_model(do1, do2)
     model = load_PLACES_weight(model, WEIGHTS_PATH)
 
     last = model.layers[-2].output
@@ -432,35 +433,6 @@ def get_crops(X,Y):
     Y_crop = np.array(Y_crop)
     return [X_crop, Y_crop]
 
-
-
-def experiment(name):
-    path = "../Website/crowdsourcing/public/images/"
-    ref = "CrowdData/pilot_aggregates_part1.csv"
-    [X,Y] = load_dataset(path, ref,224)
-    X = preprocess_dataset(X)
-
-    # split for training and validation
-    n = X.shape[0]
-    n_fold = 5
-    fold_size = int(n/n_fold)
-
-    for fold in range(0,n_fold):
-        forval = [i for i in range(fold*fold_size, (fold+1)*fold_size)]
-        fortrain = [i for i in range(0, n) if i not in forval]
-        X_train = X[fortrain]
-        Y_train = Y[fortrain]
-        X_val = X[forval]
-        Y_val = Y[forval]
-
-        model = start_model()
-        print('Timestamp: {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()))
-        print("Training Fold "+str(fold))
-        model = train_model(model, X_train, Y_train, X_val, Y_val)
-        print("Training Fold " + str(fold)+" done..")
-        save_model(model, "../../CNN/Models/" + name + ".json", "../../CNN/Models/" + name + "_"+str(fold+1)+".h5")
-
-
 def convert_to_binary(pred):
     res = np.zeros(pred.shape).astype(int)
     res[pred>0.5] = 1
@@ -482,6 +454,57 @@ class LossHistory(keras.callbacks.Callback):
     def on_epoch_end(self, batch, logs={}):
         print(self.losses)
 
+def exp_training(name, batch_size = 10, lr_init = 0.01, decay = 0.01, do1=0,do2=0.2, epochs=10):
+    path="../Website/crowdsourcing/public/images/"
+    ref="CrowdData/pilot_aggregates_part1.csv"
+    val_list = "CrowdData/val_list.csv"
+    [X_train_ori, Y_train_ori, X_val_ori, Y_val_ori] = load_dataset(path, ref, val_list, 224)
+    [X_train_big, Y_train_big, X_val_big, Y_val_big] = load_dataset(path, ref, val_list, 400)
+
+    #activate cropping
+    [X_train_big, Y_train_big] = get_crops(X_train_big, Y_train_big)
+
+    X_train = np.concatenate((X_train_ori, X_train_big), axis=0)
+    Y_train = np.concatenate((Y_train_ori, Y_train_big), axis=0)
+
+    #X_train = X_train_ori
+    #Y_train = Y_train_ori
+
+    X_train = preprocess_dataset(X_train)
+    X_val_ori = preprocess_dataset(X_val_ori)
+
+    model = start_model(do1, do2)
+
+    logf = open("MODELS/log_"+name+".txt", 'w')
+    logf.write("timestamp,name,batch_size,LR,dropout1,dropout2,decay,epoch,acc_train,acc_val,rmse_train,rmse_val\n")
+    logf.flush()
+
+    best_rmse = 99
+    lr = lr_init
+    for ep in range(1, epochs + 1):
+        model = train_model(model,X_train,Y_train,X_val_ori,Y_val_ori, batch_size = batch_size, lr = lr)
+        lr = lr*(1-decay)
+
+        Y_train_pred = model.predict(X_train_ori)
+        [acc_train, rmse_train] = get_evaluation(Y_train_pred, Y_train_ori)
+
+        Y_val_pred = model.predict(X_val_ori)
+        [acc_val, rmse_val] = get_evaluation(Y_val_pred, Y_val_ori)
+
+        wfile = "MODELS/" + name + "_epoch_" + str(ep) + "_err_" + str(
+            round(rmse_train, 2)) + "_" + str(round(rmse_val, 2)) + ".h5"
+        if (rmse_val <= best_rmse):
+            save_model(model, "MODELS/complete_model.json", wfile)
+            best_rmse = rmse_val
+
+        log = str(datetime.datetime.now()) + "," + name + "," + str(batch_size) + "," + str(lr_init) + "," + str(
+            do1) + "," + str(do2) + "," + str(decay) + "," + str(ep) + "," + str(round(acc_train, 2)) + "," + str(
+            round(acc_val, 2)) + "," + str(round(rmse_train, 2)) + "," + str(round(rmse_val, 2)) + "\n"
+        logf.write(log)
+        logf.flush()
+        print(log)
+
+
 
 def run_training(name):
     path="../Website/crowdsourcing/public/images/"
@@ -494,17 +517,15 @@ def run_training(name):
     X_val = preprocess_dataset(X_val)
 
     #use expansion dataset
-    exp_path = "../../DATA/Expansion_view/"
-    exp_ref = "Expansion/attr_exp_view.csv"
-    exp_ref_same = "Expansion/attr_exp_view_same.csv"
+    #exp_path = "../../DATA/Expansion_view/"
+    #exp_ref = "Expansion/attr_exp_view.csv"
+    #exp_ref_same = "Expansion/attr_exp_view_same.csv"
     #[X_train, Y_train] = load_exp_view(exp_path, exp_ref, 224)
     #X_train = preprocess_dataset(X_train)
 
     #activate cropping
-    #[X_train, Y_train] = get_crops(X_train, Y_train)
-    #[X_val, Y_val] = get_crops(X_val, Y_val)
-
-    model = start_model()
+    [X_train, Y_train] = get_crops(X_train, Y_train)
+    [X_val, Y_val] = get_crops(X_val, Y_val)
 
     #previous training load
     #model.load_weights("??")
@@ -516,6 +537,7 @@ def run_training(name):
     losslog = LossHistory()
     callbacks_list = [checkp]
 
+    model = start_model()
     model = train_model(model, X_train, Y_train, X_val, Y_val,callbacks_list)
 
     #save_model(model,"../../CNN/Models/"+name+".json","../../CNN/Models/"+name+".h5")
@@ -598,6 +620,79 @@ def collect_log(logname, modelfiles = []):
         df_log = df_log.append(newlog, ignore_index=True)
     df_log.to_csv(logname, sep=",")
 
+def observe_attractiveness(img_dir= "../../DATA/Amsterdam/", logfile="../../DATA/amsterdam_log.csv"):
+    imgs = [x for x in os.listdir(img_dir) if x.endswith('.jpg')]
+    df_evaluated = pd.DataFrame(columns=["lat", "long", "heading", "attractiveness"])
+    for im in imgs:
+        img_path =img_dir+im
+
+        img_splitted = im.split("_")
+        ev = {}
+        ev["lat"] = round(float(img_splitted[1]),3)
+        ev["long"] = round(float(img_splitted[2]),3)
+        ev["heading"] = img_splitted[3].split(".")[0]
+
+        #evaluate attractiveness of image
+        #dummy
+        if ev["lat"] < 52.4:
+            att = 1
+        elif ev["lat"] < 52.5:
+            att = 3
+        else:
+            att = 2
+
+        if ev["long"] < 4.8:
+            att = 5
+        elif ev["long"] < 4.9:
+            att = att+1
+        else:
+            att = att+2
+
+        ev["attractiveness"] = att
+        df_evaluated = df_evaluated.append(ev,ignore_index=True)
+
+    df_evaluated["heading"] = df_evaluated["heading"].astype(int)
+    df_evaluated["attractiveness"] = df_evaluated["attractiveness"].astype(int)
+    df_evaluated.to_csv(logfile, sep=",")
+
+def aggregate_city_attractiveness(input_file="../../DATA/amsterdam_log.csv",output_file="../../DATA/amsterdam_attractiveness.csv"):
+    df_input = pd.read_csv(input_file)
+    agg_idx = {}
+    df_aggregate = pd.DataFrame(columns=["lat", "long", "h1", "att1", "att2", "att3", "att4", "attractiveness"])
+
+    for idx,row in df_input.iterrows():
+        ky = str(row["lat"])+"|"+str(row["long"])
+        if ky not in agg_idx:
+            agg_idx[ky] = 1
+            agg = {}
+            agg["lat"] = round(row["lat"],3)
+            agg["long"] = round(row["long"],3)
+            agg["h1"] = 0
+
+            df_filtered = df_input[(df_input["lat"] == row["lat"]) & (df_input["long"] == row["long"])]
+            for ii in [1,2,3,4]:
+                agg["att"+str(ii)] = df_filtered[df_filtered["heading"]==90*(ii-1)]["attractiveness"].values[0]
+
+            agg["attractiveness"] = (agg["att1"]+agg["att2"]+agg["att3"]+agg["att4"])/4
+            df_aggregate = df_aggregate.append(agg,ignore_index=True)
+
+    df_aggregate["h1"] = df_aggregate["h1"].astype("int")
+    for ii in [1,2,3,4]:
+        df_aggregate["att"+str(ii)] = df_aggregate["att"+str(ii)].astype("int")
+    df_aggregate["attractiveness"] = df_aggregate["attractiveness"].astype("int")
+    df_aggregate.to_csv(output_file)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #run_training("basic1")
@@ -610,3 +705,4 @@ def collect_log(logname, modelfiles = []):
 #predict_scenes()
 #experiment("basic_ori")
 #collect_log("current_log.txt")
+exp_training("long1")

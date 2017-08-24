@@ -1,0 +1,42 @@
+#main {
+    height: 100%;
+    align-content: center;
+}
+
+#map-container{
+    padding: 5px;
+    padding-left: 20px;
+    height: 100%;
+}
+
+#gallery-container{
+    height: 100%;
+	border: black;
+	padding: 10px
+}
+
+#map {
+    height: 100%;
+}
+
+#imgshow{
+    height: 40%;
+}
+
+.img_thumb_gal{
+    width: 22%;
+}
+
+
+
+/* Optional: Makes the sample page fill the window. */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.cont_img{
+    padding: 1px;
+    margin: 1px;
+}

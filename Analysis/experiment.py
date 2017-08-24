@@ -629,44 +629,79 @@ def gridsearch(name="test",batch_size_list = [10],decay_list=[0], do1_list=[0],d
 
     best_rmse = 99
     logf = open("MODELS/log_"+name+".txt", 'w')
-    logf.write("timestamp,name,batch_size,LR,dropout1,dropout2,epoch,acc_train,acc_val,rmse_train,rmse_val\n")
+    logf.write("timestamp,name,batch_size,LR,dropout1,dropout2,decay,epoch,acc_train,acc_val,rmse_train,rmse_val\n")
     logf.flush()
 
     for batch_size in batch_size_list:
-        for lr in [0.01,0.001]:
+        for lr in [0.01]:
             for drop1 in do1_list:
                 for drop2 in do2_list:
-                    predictor = create_predictor(droprate1=drop1,droprate2=drop2)
-                    force_stop = False
-                    for epoch in range(1,11):
-                        if(~force_stop):
-                            predictor = train_predictor(predictor,F_train,Y_train,F_val,Y_val,lr=lr,batch_size=batch_size,decay=0,epochs=1)
+                    for dec in decay_list:
+                        predictor = create_predictor(droprate1=drop1,droprate2=drop2)
+                        force_stop = False
+                        cur_lr = lr
+                        for epoch in range(1,11):
+                            if(~force_stop):
+                                predictor = train_predictor(predictor,F_train,Y_train,F_val,Y_val,lr=cur_lr,batch_size=batch_size,decay=dec,epochs=1)
 
-                            Y_train_pred = predictor.predict(F_train)
-                            [acc_train, rmse_train] = get_evaluation(Y_train_pred, Y_train)
+                                Y_train_pred = predictor.predict(F_train)
+                                [acc_train, rmse_train] = get_evaluation(Y_train_pred, Y_train)
 
-                            Y_val_pred = predictor.predict(F_val)
-                            [acc_val,rmse_val] = get_evaluation(Y_val_pred,Y_val)
+                                Y_val_pred = predictor.predict(F_val)
+                                [acc_val,rmse_val] = get_evaluation(Y_val_pred,Y_val)
 
-                            wfile = "MODELS/" + name + "_batchsize_" + str(batch_size) + "_decay_" + str(
-                                lr) + "_drop_" + str(drop1) + "_" + str(drop2) + "_epoch_" + str(epoch) + "_err_" + str(
-                                round(rmse_train, 2)) + "_" + str(round(rmse_val, 2)) + ".h5"
-                            if (rmse_val <= best_rmse):
-                                save_model(predictor, "MODELS/mymodel.json", wfile)
-                                best_rmse = rmse_val
+                                wfile = "MODELS/" + name + "_batchsize_" + str(batch_size) + "_decay_" + str(
+                                    dec) + "_drop_" + str(drop1) + "_" + str(drop2) + "_epoch_" + str(epoch) + "_err_" + str(
+                                    round(rmse_train, 2)) + "_" + str(round(rmse_val, 2)) + ".h5"
+                                if (rmse_val <= best_rmse):
+                                    save_model(predictor, "MODELS/mymodel.json", wfile)
+                                    best_rmse = rmse_val
 
-                            if(rmse_train <0.3):
-                                force_stop = True
+                                if(rmse_train <0.3):
+                                    force_stop = True
 
-                        log = str(datetime.datetime.now())+","+name+","+str(batch_size)+","+str(lr)+","+str(drop1)+","+str(drop2)+","+str(epoch)+","+str(round(acc_train,2))+","+str(round(acc_val,2))+","+str(round(rmse_train,2))+","+str(round(rmse_val,2))+"\n"
-                        logf.write(log)
-                        logf.flush()
-                        print(log)
+                            log = str(datetime.datetime.now())+","+name+","+str(batch_size)+","+str(lr)+","+str(drop1)+","+str(drop2)+","+str(dec)+","+str(epoch)+","+str(round(acc_train,2))+","+str(round(acc_val,2))+","+str(round(rmse_train,2))+","+str(round(rmse_val,2))+"\n"
+                            logf.write(log)
+                            logf.flush()
+                            print(log)
+
+                            cur_lr = cur_lr*(1-dec)
     logf.close()
+
+def predict_scenes():
+    ref = "CrowdData/pilot_aggregates_part1.csv"
+    F_dat = np.loadtxt("../../FEATS/F_all.txt")
+    reff = get_places_ref()
+    dat = pd.read_csv(ref)
+
+    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
+    model = create_predictor(vgg=True,weight_file=WEIGHTS_PATH)
+
+    preds = model.predict(F_dat)
+
+    df_scene = pd.DataFrame(
+        columns=["img_id", "rank", "scene", "score"])
+
+    for i in range(0,preds.shape[0]):
+        pred_i = preds[i]
+        sorted = np.flipud(pred_i.argsort())
+        for j in range(1, 6):
+            ct = sorted[j-1]
+            scene = {}
+            scene["img_id"] = dat["img_id"][i]
+            scene["rank"] = j
+            scene["scene"] = "'"+reff[str(ct)]+"'"
+            scene["score"] = pred_i[ct]
+            df_scene = df_scene.append(scene, ignore_index=True)
+
+    df_scene["rank"] = df_scene["rank"].astype(int)
+    df_scene["img_id"] = df_scene["img_id"].astype(int)
+    df_scene.to_csv("Data/SceneFeatures2.csv")
 
 
 def run():
     #prepare_feats(F_loc="../../FEATS/F_all.txt",prepare_generator=True)
-    gridsearch(name="numbatch_lr",batch_size_list=[20,10,5,1],do1_list=[0],do2_list=[0])
+    gridsearch(name="batchsize_decay_d",batch_size_list=[5],do1_list=[0.2],do2_list=[0.2], decay_list = [0.1, 0.05, 0.01, 0])
+    #predict_scenes()
 
 run()

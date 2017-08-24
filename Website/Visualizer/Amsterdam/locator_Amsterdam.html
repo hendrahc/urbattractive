@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+		<meta charset="utf-8">
+		<title>Amsterdam Attractiveness</title>
+	  <script type="text/javascript" src="Scripts/external/jquery.js"></script>
+	  <script type="text/javascript" src="Scripts/external/jquery-ui.min.js"></script>
+	  <script type="text/javascript" src="Scripts/external/bootstrap.min.js"></script>
+
+	  <link rel=stylesheet href="Scripts/external/jquery-ui.min.css">
+		<link rel=stylesheet href="Scripts/external/bootstrap.min.css">
+		<link rel=stylesheet href="Scripts/mystyle.css">
+  </head>
+  <body>
+	<div id="main" class="row">
+		<div id="map-container" class="col-md-6">
+			<div id="map" ></div>
+		</div>
+		<div id="gallery-container" class="col-md-6">
+			<div id="gallery" class="pre-scrollable">
+                <div id="gallery-content" >
+
+                </div>
+            </div>
+		</div>
+	</div>
+	
+	<script src="Data/coordinates_PILOT.js"></script>
+	<script src="Scripts/gsv_api_vis.js"></script>
+
+	
+
+    <script
+    src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization&key=AIzaSyCfHsH8ImU2pDZQOtwBLiNp41OW0FRj_UQ">
+    </script>
+
+  	  <script type="text/javascript" src="Scripts/external/heatmap.js"></script>
+	  <script type="text/javascript" src="Scripts/external/gmaps-heatmap.js"></script>
+
+	  <script>
+	  document.addEventListener("DOMContentLoaded", function(event) {
+		initMap();
+	  });
+	</script>
+
+  </body>
+
+</html>
