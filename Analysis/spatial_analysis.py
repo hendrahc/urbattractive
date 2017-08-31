@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 
 
+
+
 def load_data(input_file = "../../DATA/attr_judgments.csv"):
     df_dat = pd.read_csv(input_file)
     lats = df_dat["latitude"].values

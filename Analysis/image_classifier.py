@@ -76,7 +76,7 @@ def create_basic_model(do1, do2):
     # Block 5
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_1', trainable=False)(x)
     x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_2', trainable=False)(x)
-    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_3', trainable=False)(x)
+    x = Conv2D(512, (3, 3), activation='relu', padding='same', name='conv5_3', trainable=True)(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), name='pool5')(x)
 
     # Classification block
@@ -471,6 +471,7 @@ def exp_training(name, batch_size = 10, lr_init = 0.01, decay = 0.01, do1=0,do2=
     #Y_train = Y_train_ori
 
     X_train = preprocess_dataset(X_train)
+    X_train_ori = preprocess_dataset(X_train_ori)
     X_val_ori = preprocess_dataset(X_val_ori)
 
     model = start_model(do1, do2)
@@ -504,121 +505,48 @@ def exp_training(name, batch_size = 10, lr_init = 0.01, decay = 0.01, do1=0,do2=
         logf.flush()
         print(log)
 
-
-
-def run_training(name):
-    path="../Website/crowdsourcing/public/images/"
-    ref="CrowdData/pilot_aggregates_part1.csv"
-    val_list = "CrowdData/val_list.csv"
-    [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 224)
-    #[X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 400)
-
-    X_train = preprocess_dataset(X_train)
-    X_val = preprocess_dataset(X_val)
-
-    #use expansion dataset
-    #exp_path = "../../DATA/Expansion_view/"
-    #exp_ref = "Expansion/attr_exp_view.csv"
-    #exp_ref_same = "Expansion/attr_exp_view_same.csv"
-    #[X_train, Y_train] = load_exp_view(exp_path, exp_ref, 224)
-    #X_train = preprocess_dataset(X_train)
-
-    #activate cropping
-    [X_train, Y_train] = get_crops(X_train, Y_train)
-    [X_val, Y_val] = get_crops(X_val, Y_val)
-
-    #previous training load
-    #model.load_weights("??")
-
-    checkpath = "checks_"+name+"_{epoch:02d}_loss_{loss:.2f}_{val_loss:.2f}.h5"
-    checkp = keras.callbacks.ModelCheckpoint(checkpath, monitor='val_loss', verbose=0, save_best_only=False,
-                                    save_weights_only=True, mode='auto', period=1)
-
-    losslog = LossHistory()
-    callbacks_list = [checkp]
-
-    model = start_model()
-    model = train_model(model, X_train, Y_train, X_val, Y_val,callbacks_list)
-
-    #save_model(model,"../../CNN/Models/"+name+".json","../../CNN/Models/"+name+".h5")
-
-def test_scene_prediction():
-    WEIGHTS_PATH = '../../CNN/PredefinedModels/vgg_places_keras.h5'
-    model = create_basic_model()
-
-    model = load_PLACES_weight(model, WEIGHTS_PATH)
-
-    img_path = '../Website/crowdsourcing/public/images/PILOT/GSV_PILOT_2_2.jpg'
-    reff = get_places_ref()
-    tes = classify_scene(model,reff,img_path)
-    return model
-
-
-def tesTrial():
-    model = load_model("../../CNN/Models/trial_naif.json", "../../CNN/Models/trial_naif.h5")
-
-    path="../Website/crowdsourcing/public/images/"
-    ref="CrowdData/pilot_aggregates_part1.csv"
-    [X,Y] = load_dataset(path,ref,224)
-    X = preprocess_dataset(X)
-    X_tes = X[0:10]
-    Y_tes = Y[0:10]
-    preds = model.predict(X_tes, batch_size=10)
-
-    return [model,X,Y,X_tes,Y_tes,preds]
-
-def tes_training_work():
+def train_expansion(name, batch_size = 10, lr_init = 0.001, decay = 0.01, do1=0,do2=0.2, epochs=10, expandset = "Expansion/atr_exp_view_linear.csv"):
     path = "../Website/crowdsourcing/public/images/"
     ref = "CrowdData/pilot_aggregates_part1.csv"
-    [X, Y] = load_dataset(path, ref)
-    X = preprocess_dataset(X)
-
-    X_train = X[0:4]
-    Y_train = Y[0:4]
-    Y_train[0] = np.array([1,1,0,0])
-    Y_train[1] = np.array([0, 1, 1, 0])
-    Y_train[2] = np.array([0, 0, 1, 1])
-    Y_train[3] = np.array([0, 0, 0, 1])
-
-    model = start_model()
-    model = train_model(model, X_train, Y_train, X_train, Y_train)
-
-    save_model(model, "../../CNN/Models/overfit2.json", "../../CNN/Models/overfit2.h5")
-
-def collect_log(logname, modelfiles = []):
-    path = "../Website/crowdsourcing/public/images/"
-    ref = "CrowdData/pilot_aggregates_part1.csv"
-
     val_list = "CrowdData/val_list.csv"
-    [X_train, Y_train, X_val, Y_val] = load_dataset(path, ref, val_list, 224)
+    [X_train_ori, Y_train_ori, X_val_ori, Y_val_ori] = load_dataset(path, ref, val_list, 224)
+
+    [X_train, Y_train, X_val_expand, Y_val_expand] = load_dataset(path, ref, val_list, 224)
 
     X_train = preprocess_dataset(X_train)
-    X_val = preprocess_dataset(X_val)
+    X_train_ori = preprocess_dataset(X_train_ori)
+    X_val_ori = preprocess_dataset(X_val_ori)
 
-    df_log = pd.DataFrame(columns=["modelname", "acc_train", "acc_val", "rmse_train", "rmse_val"])
+    model = start_model(do1, do2)
 
-    if (modelfiles == []):
-        modelfiles = [x for x in os.listdir(".") if x.endswith('.h5')]
-    for modelfile in modelfiles:
-        print("checking "+modelfile)
-        newlog = {}
-        newlog["modelname"] = modelfile
-        model = start_model()
-        model.load_weights(modelfile)
-        model.compile(loss='binary_crossentropy', optimizer="SGD", metrics=[])
-        preds_val = model.predict(X_val)
-        eval_val = get_evaluation(preds_val,Y_val)
-        newlog["acc_val"] = eval_val[0]
-        newlog["rmse_val"] = eval_val[1]
-        print(modelfile + "|" +str(eval_val[0]) +"|"+ str(eval_val[1]))
-        preds_train = model.predict(X_train)
-        eval_train = get_evaluation(preds_train, Y_train)
-        newlog["acc_train"] = eval_train[0]
-        newlog["rmse_train"] = eval_train[1]
-        print(modelfile + "|" + str(eval_train[0]) + "|" + str(eval_train[1]))
+    logf = open("MODELS/log_" + name + ".txt", 'w')
+    logf.write("timestamp,name,batch_size,LR,dropout1,dropout2,decay,epoch,acc_train,acc_val,rmse_train,rmse_val\n")
+    logf.flush()
 
-        df_log = df_log.append(newlog, ignore_index=True)
-    df_log.to_csv(logname, sep=",")
+    best_rmse = 99
+    lr = lr_init
+    for ep in range(1, epochs + 1):
+        model = train_model(model, X_train, Y_train, X_val_ori, Y_val_ori, batch_size=batch_size, lr=lr)
+        lr = lr * (1 - decay)
+
+        Y_train_pred = model.predict(X_train_ori)
+        [acc_train, rmse_train] = get_evaluation(Y_train_pred, Y_train_ori)
+
+        Y_val_pred = model.predict(X_val_ori)
+        [acc_val, rmse_val] = get_evaluation(Y_val_pred, Y_val_ori)
+
+        wfile = "MODELS/" + name + "_epoch_" + str(ep) + "_err_" + str(
+            round(rmse_train, 2)) + "_" + str(round(rmse_val, 2)) + ".h5"
+        if (rmse_val <= best_rmse):
+            save_model(model, "MODELS/complete_model.json", wfile)
+            best_rmse = rmse_val
+
+        log = str(datetime.datetime.now()) + "," + name + "," + str(batch_size) + "," + str(lr_init) + "," + str(
+            do1) + "," + str(do2) + "," + str(decay) + "," + str(ep) + "," + str(round(acc_train, 2)) + "," + str(
+            round(acc_val, 2)) + "," + str(round(rmse_train, 2)) + "," + str(round(rmse_val, 2)) + "\n"
+        logf.write(log)
+        logf.flush()
+        print(log)
 
 def observe_attractiveness(img_dir= "../../DATA/Amsterdam/", logfile="../../DATA/amsterdam_log.csv"):
     imgs = [x for x in os.listdir(img_dir) if x.endswith('.jpg')]
@@ -705,4 +633,4 @@ def aggregate_city_attractiveness(input_file="../../DATA/amsterdam_log.csv",outp
 #predict_scenes()
 #experiment("basic_ori")
 #collect_log("current_log.txt")
-exp_training("long1")
+exp_training("moretrain1",decay=0.06)

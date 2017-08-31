@@ -107,8 +107,8 @@ def label_views_linear(df_loc,loc_im,df_img=pd.read_csv("Data/images.csv"),df_vo
 
             dir_left = df_img[df_img["id"] == img_id_left]["heading"].values[0]
 
-            for k in [0, 1]:
-                dir_new = (dir_left + (k+1)*30 )%360
+            for k in [0, 1, 2]:
+                dir_new = (dir_left + k*30 )%360
 
                 attr_pred = attr_left
                 if k==1:
@@ -194,6 +194,8 @@ def read_ref(img_data_f,loc_data_f,loc_im_f):
 def expand_view(id,df_img,df_loc,loc_im,expand_view_dir = "../../DATA/Expansion_view/"):
     headings = df_img[df_img["loc_id"]==id]["heading"].values
 
+
+
     #get coordinate
     [lat,long] = df_loc[df_loc["loc_id"]==id].values[0][[1,2]]
     for i in [0,1,2,3]:
@@ -210,7 +212,6 @@ def expand_view(id,df_img,df_loc,loc_im,expand_view_dir = "../../DATA/Expansion_
             else:
                 print("File "+fname+" is already exists")
 
-            #labeling
 
 
 def hist_compare(id,df_img):
@@ -237,7 +238,6 @@ def hist_compare(id,df_img):
         plt.plot(ds[h])
     plt.xticks([i for i in range(0,36)],ax)
     plt.show()
-
 
 
 
