@@ -186,6 +186,47 @@ def load_dataset(path,ref_file, val_list, width):
     Y_val = np.array(Y_val)
     return [X_train, Y_train, X_val, Y_val]
 
+def load_expansion(ref_file, loc_list, width = 224, path = "../../DATA/Expansion_view/"):
+    ref = pd.read_csv(ref_file)
+    X_train = []
+    Y_train = []
+    X_val = []
+    Y_val = []
+    locs = pd.read_csv(loc_list)["loc_id"].values.tolist()
+    for index,row in ref.iterrows():
+        filename = path + row["img_name"]
+        loc_id = int(row["img_name"].split("_")[1])
+        is_train = (loc_id in locs)
+
+        img = ""
+        if is_train:
+            img = image.load_img(filename, target_size=(width, width))
+
+            x = image.img_to_array(img)
+            cls = row["median"]
+            y = []
+
+            if cls==1:
+                y = [0, 0, 0, 0]
+            elif cls == 2:
+                y = [1, 0, 0, 0]
+            elif cls == 3:
+                y = [1, 1, 0, 0]
+            elif cls == 4:
+                y = [1, 1, 1, 0]
+            elif cls == 5:
+                y = [1, 1, 1, 1]
+            else:
+                y = [1, 1, 0, 0]
+
+            X_train.append(x)
+            Y_train.append(y)
+
+    X_train = np.array(X_train)
+    Y_train = np.array(Y_train)
+    return [X_train, Y_train]
+
+
 def load_exp_view(path, ref_file, width):
     ref = pd.read_csv(ref_file)
     X_train = []
@@ -509,9 +550,10 @@ def train_expansion(name, batch_size = 10, lr_init = 0.001, decay = 0.01, do1=0,
     path = "../Website/crowdsourcing/public/images/"
     ref = "CrowdData/pilot_aggregates_part1.csv"
     val_list = "CrowdData/val_list.csv"
+    loc_train_list = "CrowdData/loc_train_list.csv"
     [X_train_ori, Y_train_ori, X_val_ori, Y_val_ori] = load_dataset(path, ref, val_list, 224)
 
-    [X_train, Y_train, X_val_expand, Y_val_expand] = load_dataset(path, ref, val_list, 224)
+    [X_train, Y_train] = load_expansion(expandset, loc_train_list)
 
     X_train = preprocess_dataset(X_train)
     X_train_ori = preprocess_dataset(X_train_ori)
